@@ -1,10 +1,12 @@
-﻿using System;
+﻿using SteamStatsApp.AvailableGames;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Trfc.ClientFramework;
 
-namespace SteamStatsApp
+namespace SteamStatsApp.Main
 {
     public sealed class MainPageViewModel : ViewModelBase
     {

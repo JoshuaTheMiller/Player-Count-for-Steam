@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SteamStatsApp
+namespace Trfc.ClientFramework
 {
     public abstract class ViewModelBase : BindableObject, IRefreshable
     {    

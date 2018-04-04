@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SteamStatsApp.AvailableGames;
+using SteamStatsApp.Main;
 using SteamStatsApp.Tests.Doppels;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SteamStatsApp.Tests
@@ -12,13 +12,13 @@ namespace SteamStatsApp.Tests
         [TestMethod]
         public async Task SearchIgnoresCase()
         {
+            DoppelCommandFactory.SetupStaticCommandFactory();
             var doppelFetcher = new DoppelGameFetcher()
             {
                 Games = new Game[] 
                 {
                     NewGame("SoA", 1),
-                    NewGame("s", 2),
-                    NewGame("W", 3)
+                    NewGame("s", 2)                    
                 }
             };
             var viewModel = new MainPageViewModel(doppelFetcher);

@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace SteamStatsApp
+namespace Trfc.ClientFramework
 {
     public class RangedObservableCollection<T> : ObservableCollection<T>, IRangedCollection<T>
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SteamStatsApp
+namespace Trfc.ClientFramework
 {
     public static class RangedObservableCollectionExtensions
     {

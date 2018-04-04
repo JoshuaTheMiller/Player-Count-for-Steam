@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace SteamStatsApp
+namespace SteamStatsApp.AvailableGames
 {
     public sealed class HardCodedGameFetcher : IAvailableGamesFetcher
     {        

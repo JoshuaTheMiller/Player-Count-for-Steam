@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SteamStatsApp
+namespace SteamStatsApp.AvailableGames
 {
     public interface IAvailableGamesFetcher
     {

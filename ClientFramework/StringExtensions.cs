@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SteamStatsApp
+namespace Trfc.ClientFramework
 {
     public static class StringExtensions
     {

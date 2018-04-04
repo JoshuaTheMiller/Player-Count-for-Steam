@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Trfc.ClientFramework</AssemblyName>
+    <RootNamespace>Trfc.ClientFramework</RootNamespace>
+  </PropertyGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SteamStatsApp
+namespace Trfc.ClientFramework
 {
     public interface IRangedCollection<T> : ICollection<T>
     {

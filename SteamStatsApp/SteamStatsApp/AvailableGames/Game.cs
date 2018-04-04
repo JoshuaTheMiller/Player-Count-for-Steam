@@ -1,4 +1,4 @@
-﻿namespace SteamStatsApp
+﻿namespace SteamStatsApp.AvailableGames
 {
     public sealed class Game
     {        

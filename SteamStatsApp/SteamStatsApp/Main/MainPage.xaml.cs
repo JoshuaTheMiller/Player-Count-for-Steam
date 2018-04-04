@@ -1,6 +1,6 @@
 ﻿using Xamarin.Forms;
 
-namespace SteamStatsApp
+namespace SteamStatsApp.Main
 {
     public partial class MainPage : ContentPage
 	{        
