@@ -25,7 +25,7 @@
                HorizontalOptions="FillAndExpand"           
                Text="{Binding SearchText}"/>
             <Button Text="Refresh"
-                Command="{Binding Refresh}"/>
+                Command="{Binding RefreshCommand}"/>
             <Button Text="Clear"
                 Command="{Binding ClearSearchText}"/>
         </StackLayout>

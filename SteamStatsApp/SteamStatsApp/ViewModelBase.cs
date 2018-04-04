@@ -16,22 +16,23 @@ namespace SteamStatsApp
             }
         }
 
-        public ICommand Refresh { get; }
+        public ICommand RefreshCommand { get; }
 
         protected ViewModelBase()
         {
-            Refresh =  CommandFactory.Create(async () => await RefreshWrapper(), () => !IsRefreshing);
+            RefreshCommand =  CommandFactory.Create(async () => await Refresh(), () => !IsRefreshing);
         }
 
-        private async Task RefreshWrapper()
-        {            
-            IsRefreshing = true;
+        public async Task Refresh()
+        {
+            if (IsRefreshing)
+            {
+                return;
+            }
 
             await TasksToExecuteWhileRefreshing();
-
-            IsRefreshing = false;
         }
 
-        protected virtual Task TasksToExecuteWhileRefreshing() => Task.FromResult(default(object));
+        protected virtual Task TasksToExecuteWhileRefreshing() => Task.FromResult(default(object));        
     }
 }

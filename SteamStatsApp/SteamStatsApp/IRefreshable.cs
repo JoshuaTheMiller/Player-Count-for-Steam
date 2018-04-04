@@ -7,6 +7,8 @@ namespace SteamStatsApp
     {
         bool IsRefreshing { get; }
 
-        ICommand Refresh { get; }        
+        ICommand RefreshCommand { get; }
+
+        Task Refresh();
     }
 }

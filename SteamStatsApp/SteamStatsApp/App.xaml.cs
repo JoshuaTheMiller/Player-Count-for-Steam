@@ -15,7 +15,7 @@ namespace SteamStatsApp
             MainPage = new MainPage();
             MainPage.BindingContext = viewModel;
 
-            viewModel.Refresh.Execute(null);
+            viewModel.RefreshCommand.Execute(null);
 		}
 
 		protected override void OnStart ()

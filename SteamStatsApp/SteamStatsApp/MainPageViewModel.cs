@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -61,7 +62,7 @@ namespace SteamStatsApp
                 return;
             }
 
-            var filteredList = originalGamesList.Where(game => game.Name.Contains(obj)).ToList();
+            var filteredList = originalGamesList.Where(game => game.Name.Contains(obj, StringComparison.OrdinalIgnoreCase)).ToList();
 
             SetGameList(filteredList);
         }
