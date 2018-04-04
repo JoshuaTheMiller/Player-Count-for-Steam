@@ -46,7 +46,7 @@ namespace SteamStatsApp
 
         private async Task OnRefreshGamesList()
         {
-            originalGamesList = (await fetcher.FetchGamesAsync()).ToList();
+            originalGamesList = (await fetcher.FetchGamesAsync()).OrderBy(game => game.Name).ToList();
 
             CountOfGames = originalGamesList.Count;
 
@@ -67,12 +67,7 @@ namespace SteamStatsApp
         }
 
         private void SetGameList(IEnumerable<Game> newList)
-        {
-            if (newList.Count() <= 0)
-            {
-                return;
-            }
-
+        { 
             Games.ReplaceWithRange(newList);
         }
 
