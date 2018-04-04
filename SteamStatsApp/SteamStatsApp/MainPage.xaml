@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:SteamStatsApp"
+             x:Class="SteamStatsApp.MainPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="GameListDataTemplate">
+                <TextCell Text="{Binding Name}"/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <StackLayout Orientation="Vertical"
+                 HorizontalOptions="FillAndExpand">
+        <Label Text="{Binding CountOfGames, StringFormat='Player Count currently supports {0} games'}"          
+               HorizontalOptions="StartAndExpand" />
+        <ListView x:Name="GameList" 
+                  ItemTemplate="{StaticResource Key=GameListDataTemplate}"
+                  ItemsSource="{Binding Games}" 
+                  IsPullToRefreshEnabled="True"
+                  RefreshCommand="{Binding Refresh}"
+                  IsRefreshing="{Binding IsRefreshing}" />
+        <StackLayout Orientation="Horizontal">
+            <Entry VerticalOptions="Start"
+               HorizontalOptions="FillAndExpand"           
+               Text="{Binding SearchText}"/>
+            <Button Text="Refresh"
+                Command="{Binding Refresh}"/>
+            <Button Text="Clear"
+                Command="{Binding ClearSearchText}"/>
+        </StackLayout>
+    </StackLayout>
+</ContentPage>
