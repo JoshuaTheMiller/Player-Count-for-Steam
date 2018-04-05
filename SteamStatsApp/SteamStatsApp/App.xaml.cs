@@ -1,5 +1,6 @@
 ﻿using SteamStatsApp.AvailableGames;
 using SteamStatsApp.Main;
+using System.Collections.Generic;
 using Trfc.ClientFramework;
 using Xamarin.Forms;
 
@@ -11,7 +12,15 @@ namespace SteamStatsApp
 		{
             CommandFactory.CommandFactoryInstance = new XamarinCommandFactory();
 
-            var viewModel = new MainPageViewModel(new HardCodedGameFetcher());
+            var mainEndpoint = "https://steamstatsapi.herokuapp.com/";
+            var configurationValues = new Dictionary<string,string>()
+            {
+                { "AvailableGames", $"{mainEndpoint}/api/v1.0/availablegames"}
+            };
+
+            var configurationProvider = new ConfigurationProvider(configurationValues);
+            var gameFetcher = new OnlineGameFetche(configurationProvider);
+            var viewModel = new MainPageViewModel(gameFetcher);
 
             MainPage = new MainPage
             {
