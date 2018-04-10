@@ -19,7 +19,7 @@ namespace SteamStatsApp
             };
 
             var configurationProvider = new ConfigurationProvider(configurationValues);
-            var gameFetcher = new OnlineGameFetche(configurationProvider);
+            var gameFetcher = new OnlineGameFetcher(configurationProvider);
             var viewModel = new MainPageViewModel(gameFetcher);
 
             MainPage = new MainPage

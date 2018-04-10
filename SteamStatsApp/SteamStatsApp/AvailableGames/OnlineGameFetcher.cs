@@ -6,13 +6,13 @@ using Trfc.ClientFramework;
 
 namespace SteamStatsApp.AvailableGames
 {
-    public sealed class OnlineGameFetche : IAvailableGamesFetcher
+    public sealed class OnlineGameFetcher : IAvailableGamesFetcher
     {
         private readonly string connectionStringKey = "AvailableGames";
 
         private readonly IConfigurationProvider configurationProvider;
 
-        public OnlineGameFetche(IConfigurationProvider configurationProvider)
+        public OnlineGameFetcher(IConfigurationProvider configurationProvider)
         {
             this.configurationProvider = configurationProvider;
         }
