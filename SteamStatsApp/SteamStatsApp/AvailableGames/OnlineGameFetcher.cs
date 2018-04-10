@@ -1,6 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -11,40 +10,43 @@ namespace SteamStatsApp.AvailableGames
         private readonly string connectionStringKey = "AvailableGames";
 
         private readonly IConfigurationProvider configurationProvider;
+        private readonly IWebGateway webGateway;
 
-        public OnlineGameFetcher(IConfigurationProvider configurationProvider)
+        public OnlineGameFetcher(IConfigurationProvider configurationProvider,
+            IWebGateway webGateway)
         {
             this.configurationProvider = configurationProvider;
+            this.webGateway = webGateway;
         }
 
         public async Task<IEnumerable<Game>> FetchGamesAsync()
         {
             var endpoint = configurationProvider.GetConnectionStringById(connectionStringKey);
 
-            var response = await GetResponseFromEndpoint<ResponseDao>(endpoint);
+            var response = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint);
 
-            return response.AvailableGames;
-        }
+            return response.AvailableGames.Select(ConvertGameDao).ToList();
+        }    
 
-        private async Task<T> GetResponseFromEndpoint<T>(string url)
+        private Game ConvertGameDao(GameDao gameDao)
         {
-            var responseString = await GetResponseString(url);
-
-            return JsonConvert.DeserializeObject<T>(responseString);
-        }
-
-        private async Task<string> GetResponseString(string url)
-        {
-            var client = new HttpClient();
-            
-            var response = await client.GetAsync(url);
-
-            return await response.Content.ReadAsStringAsync();            
+            return new Game()
+            {
+                Id = gameDao.Id,
+                Name = gameDao.Name
+            };
         }
 
         private sealed class ResponseDao
         {
-            public List<Game> AvailableGames { get; set; }
+            public List<GameDao> AvailableGames { get; set; }
+        }
+
+        private sealed class GameDao
+        {
+            public string Name { get; set; }
+
+            public string Id { get; set; }
         }
     }
 }

@@ -11,15 +11,15 @@ namespace SteamStatsApp
 		public App ()
 		{
             CommandFactory.CommandFactoryInstance = new XamarinCommandFactory();
-
+            
             var mainEndpoint = "https://steamstatsapi.herokuapp.com/";
             var configurationValues = new Dictionary<string,string>()
             {
-                { "AvailableGames", $"{mainEndpoint}/api/v1.0/availablegames"}
+                { "AvailableGames", $"{mainEndpoint}/api/v1.0/availablegames"}                
             };
-
+            var webGateway = new WebGateway();
             var configurationProvider = new ConfigurationProvider(configurationValues);
-            var gameFetcher = new OnlineGameFetcher(configurationProvider);
+            var gameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);
             var viewModel = new MainPageViewModel(gameFetcher);
 
             MainPage = new MainPage
