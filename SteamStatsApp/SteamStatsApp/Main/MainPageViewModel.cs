@@ -1,4 +1,4 @@
-﻿using SteamStatsApp.AvailableGames;
+﻿using SteamStatsApp.GameFavorites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace SteamStatsApp.Main
 {
     public sealed class MainPageViewModel : ViewModelBase
     {
-        private readonly IAvailableGamesFetcher fetcher;
+        private readonly IGamesViewModelFetcher fetcher;        
 
         private string searchText = string.Empty;
         public string SearchText
@@ -23,9 +23,9 @@ namespace SteamStatsApp.Main
 
         public ICommand RefreshGamesList { get; }
 
-        private ICollection<Game> originalGamesList = new List<Game>();
+        private ICollection<GameViewModel> originalGamesList = new List<GameViewModel>();
 
-        public IRangedCollection<Game> Games { get; } = new RangedObservableCollection<Game>();
+        public IRangedCollection<GameViewModel> Games { get; } = new RangedObservableCollection<GameViewModel>();
 
         private int countOfGames = 0;
 
@@ -35,9 +35,9 @@ namespace SteamStatsApp.Main
             private set => SetField(ref countOfGames, value);
         }
 
-        public MainPageViewModel(IAvailableGamesFetcher fetcher)
+        public MainPageViewModel(IGamesViewModelFetcher fetcher)
         {
-            this.fetcher = fetcher;
+            this.fetcher = fetcher;            
             this.ClearSearchText = CommandFactory.Create(OnClearSearchText);
             this.RefreshGamesList = CommandFactory.Create(async () => await OnRefreshGamesList());
         }
@@ -49,7 +49,9 @@ namespace SteamStatsApp.Main
 
         private async Task OnRefreshGamesList()
         {
-            originalGamesList = (await fetcher.FetchGamesAsync()).OrderBy(game => game.Name).ToList();
+            originalGamesList = (await fetcher.FetchGameViewModelsAsync())
+                .OrderByDescending(game => game.IsFavorited)
+                .ThenBy(game => game.Name).ToList();
 
             CountOfGames = originalGamesList.Count;
 
@@ -69,7 +71,7 @@ namespace SteamStatsApp.Main
             SetGameList(filteredList);
         }
 
-        private void SetGameList(IEnumerable<Game> newList)
+        private void SetGameList(IEnumerable<GameViewModel> newList)
         { 
             Games.ReplaceWithRange(newList);
         }

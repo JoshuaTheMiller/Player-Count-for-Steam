@@ -6,7 +6,20 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <DataTemplate x:Key="GameListDataTemplate">
-                <TextCell Text="{Binding Name}"/>
+                <ViewCell>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Switch Grid.Column="0"
+                                IsToggled="{Binding IsFavorited}"/>
+                        <Label Grid.Column="1" 
+                               VerticalOptions="Center"
+                               Text="{Binding Name}"/>
+                    </Grid>
+                </ViewCell>
             </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>

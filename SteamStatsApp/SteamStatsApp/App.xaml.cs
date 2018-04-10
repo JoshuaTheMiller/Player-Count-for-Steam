@@ -1,4 +1,5 @@
 ﻿using SteamStatsApp.AvailableGames;
+using SteamStatsApp.GameFavorites;
 using SteamStatsApp.Main;
 using System.Collections.Generic;
 using Trfc.ClientFramework;
@@ -19,7 +20,9 @@ namespace SteamStatsApp
             };
             var webGateway = new WebGateway();
             var configurationProvider = new ConfigurationProvider(configurationValues);
-            var gameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);
+            var availableGameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);
+            var gameFavoriter = new InMemoryGameFavorites();
+            var gameFetcher = new GamesViewModelFetcher(availableGameFetcher, gameFavoriter, gameFavoriter);
             var viewModel = new MainPageViewModel(gameFetcher);
 
             MainPage = new MainPage

@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SteamStatsApp.AvailableGames;
+using SteamStatsApp.GameFavorites;
 using SteamStatsApp.Main;
 using SteamStatsApp.Tests.Doppels;
 using System.Threading.Tasks;
@@ -13,12 +14,13 @@ namespace SteamStatsApp.Tests
         public async Task SearchIgnoresCase()
         {
             DoppelCommandFactory.SetupStaticCommandFactory();
+            var gameFavoriter = new DoppelGameFavoriter();
             var doppelFetcher = new DoppelGameFetcher()
             {
-                Games = new Game[] 
+                Games = new GameViewModel[] 
                 {
-                    NewGame("SoA", 1),
-                    NewGame("s", 2)                    
+                    NewGame("SoA", 1, gameFavoriter),
+                    NewGame("s", 2, gameFavoriter)                    
                 }
             };
             var viewModel = new MainPageViewModel(doppelFetcher);
@@ -32,13 +34,9 @@ namespace SteamStatsApp.Tests
             Assert.AreEqual(expectedCount, actualCount);
         }         
 
-        private Game NewGame(string name, int id)
+        private GameViewModel NewGame(string name, int id, IGameFavoriter favoriter)
         {
-            return new Game()
-            {
-                Name = name,
-                Id = id.ToString()
-            };
+            return new GameViewModel(name, id, false, favoriter);
         }
     }
 }
