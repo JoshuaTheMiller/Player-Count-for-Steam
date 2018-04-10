@@ -18,7 +18,7 @@
                   ItemTemplate="{StaticResource Key=GameListDataTemplate}"
                   ItemsSource="{Binding Games}" 
                   IsPullToRefreshEnabled="True"
-                  RefreshCommand="{Binding Refresh}"
+                  RefreshCommand="{Binding RefreshCommand}"
                   IsRefreshing="{Binding IsRefreshing}" />
         <StackLayout Orientation="Horizontal">
             <Entry VerticalOptions="Start"

@@ -9,11 +9,7 @@ namespace Trfc.ClientFramework
         public bool IsRefreshing
         {
             get => isRefreshing;
-            private set
-            {
-                isRefreshing = value;
-                NotifyPropertyChanged();
-            }
+            private set => SetField(ref isRefreshing, value);
         }
 
         public ICommand RefreshCommand { get; }
@@ -25,12 +21,17 @@ namespace Trfc.ClientFramework
 
         public async Task Refresh()
         {
+            //Threading issue?
             if (IsRefreshing)
             {
                 return;
             }
 
+            IsRefreshing = true;
+
             await TasksToExecuteWhileRefreshing();
+
+            IsRefreshing = false;
         }
 
         protected virtual Task TasksToExecuteWhileRefreshing() => Task.FromResult(default(object));        
