@@ -8,24 +8,27 @@ namespace SteamStatsApp.GameFavorites
     {
         private readonly IDictionary<int, bool> favoriteGameIds = new Dictionary<int, bool>();
 
-        public Task FavoriteGameById(int id)
+        public Task<bool> FavoriteGameById(int id)
         {
             if (!favoriteGameIds.ContainsKey(id))
             {
                 favoriteGameIds.Add(id, true);
+
+                return Task.FromResult(true);
             }            
 
-            return Task.FromResult(default(object));
+            return Task.FromResult(false);
         }
 
-        public Task UnfavoriteGameById(int id)
+        public Task<bool> UnfavoriteGameById(int id)
         {
             if (favoriteGameIds.ContainsKey(id))
             {
                 favoriteGameIds.Remove(id);
+                return Task.FromResult(true);
             }
 
-            return Task.FromResult(default(object));
+            return Task.FromResult(false);
         }
 
         public Task<IEnumerable<int>> GetFavoritedGames()

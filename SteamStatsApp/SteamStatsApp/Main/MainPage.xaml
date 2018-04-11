@@ -11,10 +11,10 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Switch Grid.Column="0"
-                                IsToggled="{Binding IsFavorited}"/>
+                        <Button Grid.Column="0"
+                                Text="{Binding IsFavoritedText, Mode=OneWay}"
+                                Command="{Binding ToggleFavoriteCommand}"/>
                         <Label Grid.Column="1" 
                                VerticalOptions="Center"
                                Text="{Binding Name}"/>

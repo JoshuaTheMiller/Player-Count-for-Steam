@@ -5,14 +5,14 @@ namespace SteamStatsApp.Tests.Doppels
 {
     internal sealed class DoppelGameFavoriter : IGameFavoriter
     {
-        public Task FavoriteGameById(int id)
+        public Task<bool> FavoriteGameById(int id)
         {
-            return Task.FromResult(default(object));
+            return Task.FromResult(false);
         }
 
-        public Task UnfavoriteGameById(int id)
+        public Task<bool> UnfavoriteGameById(int id)
         {
-            return Task.FromResult(default(object));
+            return Task.FromResult(false);
         }
     }
 }

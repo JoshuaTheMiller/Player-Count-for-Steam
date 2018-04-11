@@ -21,7 +21,9 @@ namespace SteamStatsApp.UWP
         {
             this.InitializeComponent();
 
-            LoadApplication(new SteamStatsApp.App());
+            var toastMessageService = new ToastMessageService();
+
+            LoadApplication(new SteamStatsApp.App(toastMessageService));
         }
     }
 }

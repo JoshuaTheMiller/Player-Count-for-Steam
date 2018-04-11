@@ -1,10 +1,15 @@
 ﻿using SteamStatsApp.GameFavorites;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using Trfc.ClientFramework;
 
 namespace SteamStatsApp.Main
 {
     public sealed class GameViewModel : ViewModelBase
     {
+        private const string NOTFAVORITE = "☆";
+        private const string FAVORITE = "★";
+
         private readonly IGameFavoriter favoriter;
 
         public string Name { get; }
@@ -15,27 +20,64 @@ namespace SteamStatsApp.Main
         public bool IsFavorited
         {
             get => isFavorited;
-            set => SetField(ref isFavorited, value, FavoriteChanged);
-        }
+            private set => SetField(ref isFavorited, value, OnFavoriteChanged);
+        }    
 
-        private void FavoriteChanged(bool obj)
+        private string isFavoritedText = NOTFAVORITE;
+        public string IsFavoritedText
         {
-            if(obj)
-            {
-                favoriter.FavoriteGameById(this.Id);
-            }
-            else
-            {
-                favoriter.UnfavoriteGameById(this.Id);
-            }
+            get => isFavoritedText;
+            private set => SetField(ref isFavoritedText, value);
         }
 
+        public ICommand ToggleFavoriteCommand { get; }
+  
         public GameViewModel(string name, int id, bool isFavorited, IGameFavoriter favoriter)
         {
             Name = name;
             Id = id;
-            this.isFavorited = isFavorited;
+            this.IsFavorited = isFavorited;
             this.favoriter = favoriter;
+            this.ToggleFavoriteCommand = CommandFactory.Create(async () => await ToggleFavorite());
+        }
+
+        /*
+         * HACK
+         * Possibly should have this check in the view model before even performing a service call.
+         * This is probably a sign that there should be a view model that represents 
+         * the list of all games (i.e. the MainViewModel at this point in time) so 
+         * that checks may be done against the whole list.
+        */
+        private async Task ToggleFavorite()
+        {
+            bool result = false;
+
+            var valueIfToggled = !this.IsFavorited;
+
+            if (valueIfToggled)
+            {
+                result = await favoriter.FavoriteGameById(this.Id);
+
+                IsFavorited = result;
+            }
+            else
+            {
+                result = await favoriter.UnfavoriteGameById(this.Id);
+
+                IsFavorited = !result;
+            } 
+        }
+
+        private void OnFavoriteChanged(bool obj)
+        {
+            if (obj)
+            {
+                IsFavoritedText = FAVORITE;
+            }
+            else
+            {
+                IsFavoritedText = NOTFAVORITE;
+            }
         }
     }
 }

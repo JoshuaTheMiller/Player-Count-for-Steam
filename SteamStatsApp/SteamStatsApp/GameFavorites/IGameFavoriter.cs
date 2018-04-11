@@ -4,8 +4,8 @@ namespace SteamStatsApp.GameFavorites
 {
     public interface IGameFavoriter
     {
-        Task FavoriteGameById(int id);
+        Task<bool> FavoriteGameById(int id);
 
-        Task UnfavoriteGameById(int id);
+        Task<bool> UnfavoriteGameById(int id);
     }
 }

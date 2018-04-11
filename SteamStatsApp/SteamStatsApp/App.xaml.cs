@@ -9,7 +9,7 @@ namespace SteamStatsApp
 {
     public partial class App : Application
 	{
-		public App ()
+		public App(IToastMessageService toastMessageService)
 		{
             CommandFactory.CommandFactoryInstance = new XamarinCommandFactory();
             
@@ -20,8 +20,15 @@ namespace SteamStatsApp
             };
             var webGateway = new WebGateway();
             var configurationProvider = new ConfigurationProvider(configurationValues);
-            var availableGameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);
-            var gameFavoriter = new InMemoryGameFavorites();
+            var availableGameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);            
+
+            var stringSerializer = new StringSerializer();
+            var stringDeserializer = new StringDeserializer();
+            var storageProvider = new StorageProvider<LocalGameFavorites.GameFavoritesDao>(this, stringDeserializer, stringSerializer);
+
+            //var gameFavoriter = new InMemoryGameFavorites();
+            var gameFavoriter = new LocalGameFavorites(storageProvider, toastMessageService);
+
             var gameFetcher = new GamesViewModelFetcher(availableGameFetcher, gameFavoriter, gameFavoriter);
             var viewModel = new MainPageViewModel(gameFetcher);
 
