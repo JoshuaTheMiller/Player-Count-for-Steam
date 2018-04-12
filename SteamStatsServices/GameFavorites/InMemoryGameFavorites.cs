@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SteamStatsApp.GameFavorites
+namespace Trfc.SteamStats.ClientServices.GameFavorites
 {
     public sealed class InMemoryGameFavorites : IFavoriteGameFetcher, IGameFavoriter
     {

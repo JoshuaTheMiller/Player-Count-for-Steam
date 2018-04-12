@@ -156,13 +156,13 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ClientFramework\ClientFramework.csproj">
+    <ProjectReference Include="..\ClientFramework\ClientFramework.csproj">
       <Project>{45d49b94-be63-4fd9-9a0c-67c55955923e}</Project>
       <Name>ClientFramework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SteamStatsApp\SteamStatsApp.csproj">
-      <Project>{748EE92D-6490-4137-9483-E75D76E42C91}</Project>
-      <Name>SteamStatsApp</Name>
+    <ProjectReference Include="..\SteamStatsApp\Base.csproj">
+      <Project>{23B56BFE-9FB7-4C34-B787-90E9518E262A}</Project>
+      <Name>Base</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -1,4 +1,4 @@
-﻿namespace SteamStatsApp.AvailableGames
+﻿namespace Trfc.SteamStats.ClientServices.AvailableGames
 {
     public sealed class Game
     {        

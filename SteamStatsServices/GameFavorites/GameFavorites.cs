@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SteamStatsApp.GameFavorites
+namespace Trfc.SteamStats.ClientServices.GameFavorites
 {
     public sealed class GameFavorites : Dictionary<int, bool>
     {               

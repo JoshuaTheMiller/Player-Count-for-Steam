@@ -1,8 +1,8 @@
-﻿using SteamStatsApp.AvailableGames;
-using SteamStatsApp.GameFavorites;
-using SteamStatsApp.Main;
+﻿using SteamStatsApp.Main;
 using System.Collections.Generic;
 using Trfc.ClientFramework;
+using Trfc.SteamStats.ClientServices.AvailableGames;
+using Trfc.SteamStats.ClientServices.GameFavorites;
 using Xamarin.Forms;
 
 namespace SteamStatsApp

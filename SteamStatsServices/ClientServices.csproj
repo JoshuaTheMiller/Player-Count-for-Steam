@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>Trfc.SteamStats.ClientServices</AssemblyName>
+    <RootNamespace>Trfc.SteamStats.ClientServices</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClientFramework\ClientFramework.csproj" />
+  </ItemGroup>
+
+</Project>

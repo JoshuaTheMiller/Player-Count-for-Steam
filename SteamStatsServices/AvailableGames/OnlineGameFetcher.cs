@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
-namespace SteamStatsApp.AvailableGames
+namespace Trfc.SteamStats.ClientServices.AvailableGames
 {
     public sealed class OnlineGameFetcher : IAvailableGamesFetcher
     {

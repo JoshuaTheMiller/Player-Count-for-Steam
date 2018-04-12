@@ -1,9 +1,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SteamStatsApp.AvailableGames;
-using SteamStatsApp.GameFavorites;
 using SteamStatsApp.Main;
 using SteamStatsApp.Tests.Doppels;
 using System.Threading.Tasks;
+using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Tests
 {

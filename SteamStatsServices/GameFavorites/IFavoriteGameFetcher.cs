@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SteamStatsApp.GameFavorites
+namespace Trfc.SteamStats.ClientServices.GameFavorites
 {
     public interface IFavoriteGameFetcher
     {

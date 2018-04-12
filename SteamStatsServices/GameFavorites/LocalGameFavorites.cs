@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
-namespace SteamStatsApp.GameFavorites
+namespace Trfc.SteamStats.ClientServices.GameFavorites
 {
     public sealed class LocalGameFavorites : IGameFavoriter, IFavoriteGameFetcher
     {

@@ -1,5 +1,5 @@
-﻿using SteamStatsApp.GameFavorites;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Tests.Doppels
 {

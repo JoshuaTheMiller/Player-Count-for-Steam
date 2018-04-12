@@ -1,8 +1,8 @@
-﻿using SteamStatsApp.AvailableGames;
-using SteamStatsApp.GameFavorites;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Trfc.SteamStats.ClientServices.AvailableGames;
+using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Main
 {
