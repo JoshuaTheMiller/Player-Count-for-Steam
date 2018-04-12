@@ -14,6 +14,7 @@ namespace SteamStatsApp.Tests
         {
             DoppelCommandFactory.SetupStaticCommandFactory();
             var gameFavoriter = new DoppelGameFavoriter();
+            var favoriteFetcher = new DoppelFavoriteGameFetcher();
             var doppelFetcher = new DoppelGameFetcher()
             {
                 Games = new GameViewModel[] 
@@ -22,7 +23,7 @@ namespace SteamStatsApp.Tests
                     NewGame("s", 2, gameFavoriter)                    
                 }
             };
-            var viewModel = new MainPageViewModel(doppelFetcher);
+            var viewModel = new MainPageViewModel(doppelFetcher, favoriteFetcher);
             await viewModel.Refresh();
 
             viewModel.SearchText = "s";

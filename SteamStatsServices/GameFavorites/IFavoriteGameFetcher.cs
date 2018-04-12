@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Trfc.SteamStats.ClientServices.GameFavorites
 {
     public interface IFavoriteGameFetcher
     {
-        Task<IEnumerable<int>> GetFavoritedGames();
+        event EventHandler FavoritesChanged;
+
+        Task<IEnumerable<int>> GetFavoritedGames();        
     }
 }

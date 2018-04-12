@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
@@ -13,6 +14,8 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
         private readonly string storageKey = "FavoriteGames";
 
         private readonly GameFavorites favoriteIds = new GameFavorites();
+
+        public event EventHandler FavoritesChanged;
 
         public LocalGameFavorites(IStorageProvider<GameFavoritesDao> storageProvider,
             IToastMessageService toastMessageService)
@@ -36,6 +39,8 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
 
             await storageProvider.Update(storageKey, GetCurrentFavoritesAsDao());
 
+            NotifyFavoritesChanged();
+
             return true;
         }
 
@@ -47,6 +52,8 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
 
             await storageProvider.Update(storageKey, GetCurrentFavoritesAsDao());
 
+            NotifyFavoritesChanged();
+
             return true;
         }
 
@@ -57,6 +64,11 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
             return this.favoriteIds.Keys.ToList();
         }        
         
+        public void NotifyFavoritesChanged()
+        {
+            FavoritesChanged?.Invoke(this, EventArgs.Empty);
+        }
+
         private async Task RefreshFavorites()
         {
             favoriteIds.Clear();

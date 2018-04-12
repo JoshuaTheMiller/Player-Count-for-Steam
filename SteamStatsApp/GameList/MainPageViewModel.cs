@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
+using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Main
 {
-    public sealed class MainPageViewModel : ViewModelBase
+    public sealed class MainPageViewModel : ViewModelBase, INavigationTarget
     {
-        private readonly IGamesViewModelFetcher fetcher;        
+        private readonly IGamesViewModelFetcher fetcher;
+        private readonly IFavoriteGameFetcher favoriteFecher;
 
         private string searchText = string.Empty;
         public string SearchText
@@ -34,11 +36,16 @@ namespace SteamStatsApp.Main
             private set => SetField(ref countOfGames, value);
         }
 
-        public MainPageViewModel(IGamesViewModelFetcher fetcher)
+        public string PageTitle { get; } = "All Games";
+
+        public MainPageViewModel(IGamesViewModelFetcher fetcher,
+            IFavoriteGameFetcher favoriteFecher)
         {
-            this.fetcher = fetcher;            
+            this.fetcher = fetcher;
+            this.favoriteFecher = favoriteFecher;
             this.ClearSearchText = CommandFactory.Create(OnClearSearchText);
             this.RefreshGamesList = CommandFactory.Create(async () => await OnRefreshGamesList());
+            this.favoriteFecher.FavoritesChanged += OnFavoritesChanged;
         }
 
         private void OnClearSearchText(object obj)
@@ -73,6 +80,11 @@ namespace SteamStatsApp.Main
         private void SetGameList(IEnumerable<GameViewModel> newList)
         { 
             Games.ReplaceWithRange(newList);
+        }
+
+        private async void OnFavoritesChanged(object sender, EventArgs e)
+        {
+            await this.Refresh();
         }
 
         protected override async Task TasksToExecuteWhileRefreshing()

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +8,8 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
     public sealed class InMemoryGameFavorites : IFavoriteGameFetcher, IGameFavoriter
     {
         private readonly IDictionary<int, bool> favoriteGameIds = new Dictionary<int, bool>();
+
+        public event EventHandler FavoritesChanged;
 
         public Task<bool> FavoriteGameById(int id)
         {

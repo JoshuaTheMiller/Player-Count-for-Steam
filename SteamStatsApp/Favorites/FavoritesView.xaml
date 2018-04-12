@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SteamStatsApp.Favorites.FavoritesView"
+             xmlns:local="clr-namespace:SteamStatsApp.Favorites"
+             Title="{Binding PageTitle}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Key="GameListDataTemplate">
+                <ViewCell>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0"
+                                Text="{Binding IsFavoritedText, Mode=OneWay}"
+                                Command="{Binding ToggleFavoriteCommand}"/>
+                        <Label Grid.Column="1" 
+                               VerticalOptions="Center"
+                               Text="{Binding Name}"/>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="EmptyLabel"
+                   Text="You have no favorites, yet! Head over to the All Games tab and select some."
+                   VerticalOptions="CenterAndExpand" 
+                   HorizontalOptions="CenterAndExpand"
+                   HorizontalTextAlignment="Center"
+                   IsVisible="False">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding Games.Count}" Value="0">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+            <ListView x:Name="GameList"
+                      ItemTemplate="{StaticResource Key=GameListDataTemplate}"
+                      ItemsSource="{Binding Games}" 
+                      IsPullToRefreshEnabled="True"
+                      RefreshCommand="{Binding RefreshCommand}"
+                      IsRefreshing="{Binding IsRefreshing}"
+                      IsVisible="True" />
+            <Button Grid.Row="1"
+                    Text="Refresh"
+                    Command="{Binding RefreshCommand}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

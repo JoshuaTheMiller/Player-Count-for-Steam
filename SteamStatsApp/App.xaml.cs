@@ -1,4 +1,6 @@
-﻿using SteamStatsApp.Main;
+﻿using SteamStatsApp.Favorites;
+using SteamStatsApp.Main;
+using SteamStatsApp.Shell;
 using System.Collections.Generic;
 using Trfc.ClientFramework;
 using Trfc.SteamStats.ClientServices.AvailableGames;
@@ -25,21 +27,35 @@ namespace SteamStatsApp
             var stringSerializer = new StringSerializer();
             var stringDeserializer = new StringDeserializer();
             var storageProvider = new StorageProvider<LocalGameFavorites.GameFavoritesDao>(this, stringDeserializer, stringSerializer);
-
-            //var gameFavoriter = new InMemoryGameFavorites();
+            
             var gameFavoriter = new LocalGameFavorites(storageProvider, toastMessageService);
 
-            var gameFetcher = new GamesViewModelFetcher(availableGameFetcher, gameFavoriter, gameFavoriter);
-            var viewModel = new MainPageViewModel(gameFetcher);
+            var gameFetcher = new Main.GamesViewModelFetcher(availableGameFetcher, gameFavoriter, gameFavoriter);
+            var viewModel = new MainPageViewModel(gameFetcher, gameFavoriter);
 
-            MainPage = new MainPage
+            var favoritesViewModelFetcher = new FavoriteGamesViewModelFetcher(availableGameFetcher, gameFavoriter, gameFavoriter);
+            var favoritesViewModel = new FavoritesViewModel(favoritesViewModelFetcher, gameFavoriter);
+            var favoritesView = new FavoritesView()
+            {
+                BindingContext = favoritesViewModel
+            };
+
+            var gameListView = new MainPage
             {
                 BindingContext = viewModel
             };
 
+            var shell = new TabbedMainView();
+            shell.Children.Add(favoritesView);
+            shell.Children.Add(gameListView);
+
+            MainPage = shell;
+
             InitializeComponent();
+
             viewModel.RefreshCommand.Execute(null);
-		}
+            favoritesViewModel.RefreshCommand.Execute(null);
+        }
 
 		protected override void OnStart ()
 		{
