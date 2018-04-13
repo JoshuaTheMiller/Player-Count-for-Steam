@@ -12,6 +12,15 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        <BoxView Grid.ColumnSpan="2">
+                            <BoxView.Triggers>
+                                <DataTrigger TargetType="BoxView"
+                                             Binding="{Binding IsFavorited}"
+                                             Value="True">
+                                    <Setter Property="Color" Value="LightBlue" />
+                                </DataTrigger>
+                            </BoxView.Triggers>
+                        </BoxView>
                         <Button Grid.Column="0"
                                 Text="☆"
                                 Command="{Binding ToggleFavoriteCommand}">
@@ -25,7 +34,15 @@
                         </Button>
                         <Label Grid.Column="1" 
                                VerticalOptions="Center"
-                               Text="{Binding Name}"/>
+                               Text="{Binding Name}">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding IsFavorited}"
+                                             Value="True">
+                                    <Setter Property="FontAttributes" Value="Bold" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                        </Label>
                     </Grid>
                 </ViewCell>
             </DataTemplate>
