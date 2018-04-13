@@ -55,9 +55,7 @@ namespace SteamStatsApp.Main
 
         private async Task OnRefreshGamesList()
         {
-            originalGamesList = (await fetcher.FetchGameViewModelsAsync())
-                .OrderByDescending(game => game.IsFavorited)
-                .ThenBy(game => game.Name).ToList();
+            originalGamesList = (await fetcher.FetchGameViewModelsAsync()).OrderBy(game => game.Name).ToList();
 
             CountOfGames = originalGamesList.Count;
 

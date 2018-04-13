@@ -7,9 +7,6 @@ namespace SteamStatsApp.Main
 {
     public sealed class GameViewModel : ViewModelBase
     {
-        private const string NOTFAVORITE = "☆";
-        private const string FAVORITE = "★";
-
         private readonly IGameFavoriter favoriter;
 
         public string Name { get; }
@@ -20,15 +17,8 @@ namespace SteamStatsApp.Main
         public bool IsFavorited
         {
             get => isFavorited;
-            private set => SetField(ref isFavorited, value, OnFavoriteChanged);
+            private set => SetField(ref isFavorited, value);
         }    
-
-        private string isFavoritedText = NOTFAVORITE;
-        public string IsFavoritedText
-        {
-            get => isFavoritedText;
-            private set => SetField(ref isFavoritedText, value);
-        }
 
         public ICommand ToggleFavoriteCommand { get; }
   
@@ -66,18 +56,6 @@ namespace SteamStatsApp.Main
 
                 IsFavorited = !result;
             } 
-        }
-
-        private void OnFavoriteChanged(bool obj)
-        {
-            if (obj)
-            {
-                IsFavoritedText = FAVORITE;
-            }
-            else
-            {
-                IsFavoritedText = NOTFAVORITE;
-            }
         }
     }
 }
