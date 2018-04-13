@@ -45,9 +45,14 @@ namespace SteamStatsApp
                 BindingContext = viewModel
             };
 
-            var shell = new TabbedMainView();
-            shell.Children.Add(favoritesView);
-            shell.Children.Add(gameListView);
+            var shell = new TabbedMainView()
+            {
+                ItemsSource = new ContentView[]
+                {
+                    favoritesView,
+                    gameListView
+                }
+            };            
 
             MainPage = shell;
 
