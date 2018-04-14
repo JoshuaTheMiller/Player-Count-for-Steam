@@ -72,6 +72,7 @@
                       ItemsSource="{Binding Games}" 
                       IsPullToRefreshEnabled="True"
                       RefreshCommand="{Binding RefreshCommand}"
+                      CachingStrategy="RecycleElement"
                       IsRefreshing="{Binding IsRefreshing}"
                       IsVisible="True" />
             <Button Grid.Row="1"

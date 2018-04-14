@@ -36,17 +36,20 @@ namespace SteamStatsApp
 
             var gameFavoriter = new LocalGameFavorites(storageProvider, toastMessageService);
 
-            var cacheChecker = new AvailableGamesCacheChecker(configurationProvider, webGateway);
+            var availableGamesCacheChecker = new AvailableGamesCacheChecker(configurationProvider, webGateway);
             var availableGameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);
-            var gameFetcherCache = new GameFetcherCache(availableGameFetcher, cachedAvailableGamesStorageProvider, cacheChecker);
+            var gameFetcherCache = new GameFetcherCache(availableGameFetcher, cachedAvailableGamesStorageProvider, availableGamesCacheChecker);
 
-            var gameFetcher = new GamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, gameFavoriter);
+            var gameViewModelFetcher = new GamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, gameFavoriter);
 
-            var viewModel = new MainPageViewModel(gameFetcher, gameFavoriter);
+            var mainPaigeViewModel = new MainPageViewModel(gameViewModelFetcher, gameFavoriter);
 
             var pictureFetcher = new GamePictureFetcher(configurationProvider, webGateway);
+            var pictureCacheChecker = new PictureCacheChecker(configurationProvider, webGateway);
+            var cachedPictureStorageProvider = new StorageProvider<CachedGamePicture>(app, stringDeserializer, stringSerializer);
+            var pictureCacheFetcher = new PictureFetcherCache(pictureFetcher, cachedPictureStorageProvider, pictureCacheChecker);
 
-            var favoritesViewModelFetcher = new FavoriteGamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, pictureFetcher);
+            var favoritesViewModelFetcher = new FavoriteGamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, pictureCacheFetcher);
             var favoritesViewModel = new FavoritesViewModel(favoritesViewModelFetcher, gameFavoriter);
             var favoritesView = new FavoritesView()
             {
@@ -55,7 +58,7 @@ namespace SteamStatsApp
 
             var gameListView = new MainPage
             {
-                BindingContext = viewModel
+                BindingContext = mainPaigeViewModel
             };
 
             return new BootstrappedApplication(new View[] 
