@@ -5,6 +5,6 @@ namespace SteamStatsApp.Favorites
 {
     public interface IFavoriteGamesViewModelFetcher
     {
-        Task<IEnumerable<GameViewModel>> FetchGameViewModelsAsync();
+        Task<IEnumerable<FavoriteGameViewModel>> FetchGameViewModelsAsync();
     }
 }

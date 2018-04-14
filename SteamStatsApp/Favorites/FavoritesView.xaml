@@ -2,9 +2,11 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SteamStatsApp.Favorites.FavoritesView"
-             xmlns:local="clr-namespace:SteamStatsApp.Favorites">
+             xmlns:local="clr-namespace:SteamStatsApp.Favorites"
+             xmlns:conv="clr-namespace:SteamStatsApp">
     <ContentPage.Resources>
         <ResourceDictionary>
+            <conv:ByteToImageFieldConverter  x:Key="BytesToImage"/>
             <DataTemplate x:Key="GameListDataTemplate">
                 <ViewCell>
                     <Grid>
@@ -12,9 +14,21 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        <Image Grid.ColumnSpan="2" 
+                               Source="{Binding Image, Converter={StaticResource BytesToImage}}"
+                               VerticalOptions="FillAndExpand"
+                               HorizontalOptions="FillAndExpand"
+                               Aspect="AspectFill"
+                               HeightRequest="70" />
+                        <BoxView Grid.ColumnSpan="2" 
+                                 Color="Black"
+                                 Opacity=".6" />
                         <Button Grid.Column="0"
                                 Text="☆"
-                                Command="{Binding ToggleFavoriteCommand}">
+                                Command="{Binding ToggleFavoriteCommand}"
+                                BackgroundColor="Transparent"
+                                TextColor="White"
+                                FontSize="Medium">
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button"
                                              Binding="{Binding IsFavorited}"
@@ -25,7 +39,10 @@
                         </Button>
                         <Label Grid.Column="1" 
                                VerticalOptions="Center"
-                               Text="{Binding Name}"/>
+                               Text="{Binding Name}"
+                               BackgroundColor="Transparent"
+                               TextColor="White"
+                               FontSize="Medium"/>
                     </Grid>
                 </ViewCell>
             </DataTemplate>

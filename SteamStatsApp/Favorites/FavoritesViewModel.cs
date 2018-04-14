@@ -14,7 +14,7 @@ namespace SteamStatsApp.Favorites
 
         private readonly IFavoriteGamesViewModelFetcher fetcher;          
 
-        public ICollectionView<GameViewModel> Games { get; }
+        public ICollectionView<FavoriteGameViewModel> Games { get; }
 
         public FavoritesViewModel(IFavoriteGamesViewModelFetcher viewModelFetcher,
             IFavoriteGameFetcher favoriteFecher)
@@ -22,23 +22,23 @@ namespace SteamStatsApp.Favorites
             this.fetcher = viewModelFetcher;
             favoriteFecher.FavoritesChanged += OnFavoritesChanged;            
             
-            Games = CollectionViewFactory.Create(Enumerable.Empty<GameViewModel>(),
-                Enumerable.Empty<Predicate<GameViewModel>>(), 
+            Games = CollectionViewFactory.Create(Enumerable.Empty<FavoriteGameViewModel>(),
+                Enumerable.Empty<Predicate<FavoriteGameViewModel>>(), 
                 ComparerFunction, 
                 OrderingFunction);
         }
 
-        private bool ComparerFunction(GameViewModel arg1, GameViewModel arg2)
+        private bool ComparerFunction(FavoriteGameViewModel arg1, FavoriteGameViewModel arg2)
         {
             return arg1.Id == arg2.Id;
         }
 
-        private IEnumerable<GameViewModel> OrderingFunction(IEnumerable<GameViewModel> arg)
+        private IEnumerable<FavoriteGameViewModel> OrderingFunction(IEnumerable<FavoriteGameViewModel> arg)
         {
             return arg.OrderBy(game => game.Name).ToList();
         }
 
-        private async Task OnRefreshGamesList()
+        private async Task RefreshGamesList()
         {
             var originalGamesList = await fetcher.FetchGameViewModelsAsync();          
 
@@ -48,11 +48,21 @@ namespace SteamStatsApp.Favorites
         private async void OnFavoritesChanged(object sender, EventArgs e)
         {
             await this.Refresh();
+
+        }
+
+        private async Task RefreshGameViewModels()
+        {
+            foreach (var game in Games)
+            {
+                await game.Refresh();
+            }
         }
 
         protected override async Task TasksToExecuteWhileRefreshing()
         {
-            await OnRefreshGamesList();            
-        }
+            await RefreshGamesList();
+            await RefreshGameViewModels();
+        }        
     }
 }

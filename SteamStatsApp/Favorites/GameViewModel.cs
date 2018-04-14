@@ -2,12 +2,14 @@
 using System.Windows.Input;
 using Trfc.ClientFramework;
 using Trfc.SteamStats.ClientServices.GameFavorites;
+using Trfc.SteamStats.ClientServices.GamePictures;
 
 namespace SteamStatsApp.Favorites
 {
-    public sealed class GameViewModel : ViewModelBase
+    public sealed class FavoriteGameViewModel : ViewModelBase
     {
         private readonly IGameFavoriter favoriter;
+        private readonly IGamePictureFetcher pictureFetcher;
 
         public string Name { get; }
 
@@ -18,16 +20,24 @@ namespace SteamStatsApp.Favorites
         {
             get => isFavorited;
             private set => SetField(ref isFavorited, value);
-        }    
+        }
+
+        private byte[] image;
+        public byte[] Image
+        {
+            get => image;
+            private set => SetField(ref image, value);
+        }        
 
         public ICommand ToggleFavoriteCommand { get; }
   
-        public GameViewModel(string name, int id, bool isFavorited, IGameFavoriter favoriter)
+        public FavoriteGameViewModel(string name, int id, bool isFavorited, IGameFavoriter favoriter, IGamePictureFetcher pictureFetcher)
         {
             Name = name;
             Id = id;
             this.IsFavorited = isFavorited;
             this.favoriter = favoriter;
+            this.pictureFetcher = pictureFetcher;
             this.ToggleFavoriteCommand = CommandFactory.Create(async () => await ToggleFavorite());
         }
 
@@ -56,6 +66,21 @@ namespace SteamStatsApp.Favorites
 
                 IsFavorited = !result;
             } 
+        }
+
+        protected override async Task TasksToExecuteWhileRefreshing()
+        {
+            await LoadPicture();
+        }
+
+        private async Task LoadPicture()
+        {
+            var response = await this.pictureFetcher.FetchPictureForGameAsync(this.Id);
+
+            if(response.HasPicture)
+            {
+                this.Image = response.Image;
+            }
         }
     }
 }

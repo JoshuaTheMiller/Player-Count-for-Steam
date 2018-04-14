@@ -7,11 +7,18 @@ namespace SteamStatsApp
 {
     public sealed class WebGateway : IWebGateway
     {
+        private readonly IStringDeserializer stringDeserializer;
+
+        public WebGateway(IStringDeserializer stringDeserializer)
+        {
+            this.stringDeserializer = stringDeserializer;
+        }
+
         public async Task<T> GetResponseFromEndpoint<T>(string url)
         {
             var responseString = await GetResponseString(url);
 
-            return JsonConvert.DeserializeObject<T>(responseString);
+            return stringDeserializer.Deserialize<T>(responseString);
         }
 
         private async Task<string> GetResponseString(string url)
