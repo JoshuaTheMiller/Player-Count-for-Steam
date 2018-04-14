@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Trfc.ClientFramework
 {
-    public abstract class BindableObject : INotifyPropertyChanged
+    public class BindableObject : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -18,9 +18,9 @@ namespace Trfc.ClientFramework
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool SetField<T>(ref T field, T newValue, [CallerMemberName] string propertyName = "")
+        public bool SetField<T>(ref T field, T newValue, [CallerMemberName] string propertyName = "")
         {
-            if(field.Equals(newValue))
+            if (field?.Equals(newValue) ?? false)
             {
                 return false;
             }
@@ -32,7 +32,7 @@ namespace Trfc.ClientFramework
             return true;
         }
 
-        protected bool SetField<T>(ref T field, T newValue, Action<T> callback, [CallerMemberName] string propertyName = "")
+        public bool SetField<T>(ref T field, T newValue, Action<T> callback, [CallerMemberName] string propertyName = "")
         {
             if (SetField(ref field, newValue, propertyName))
             {
