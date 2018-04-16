@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -18,13 +18,20 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
             this.webGateway = webGateway;
         }
 
-        public async Task<FetchGamePictureResponse> FetchPictureForGameAsync(int id)
+        public async Task<FetchGamePictureResponse> FetchPictureForGameAsync(int id, CancellationToken token)
         {
             var endpoint = configurationProvider.GetConnectionStringById(connectionStringKey);
 
             endpoint += $"?appId={id}";
 
-            var response = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint);
+            var gatewayResponse = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint, token);
+
+            if(!gatewayResponse.Succeeded)
+            {
+                return FetchGamePictureResponse.NoPicture(id);
+            }
+
+            var response = gatewayResponse.Value;
 
             if(response.IsValid)
             {

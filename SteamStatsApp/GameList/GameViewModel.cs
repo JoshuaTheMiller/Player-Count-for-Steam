@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
 using Trfc.SteamStats.ClientServices.GameFavorites;
@@ -60,7 +61,7 @@ namespace SteamStatsApp.Main
             } 
         }
 
-        protected override async Task TasksToExecuteWhileRefreshing()
+        protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
             IsFavorited = await querier.IsGameFavorite(this.Id);
         }

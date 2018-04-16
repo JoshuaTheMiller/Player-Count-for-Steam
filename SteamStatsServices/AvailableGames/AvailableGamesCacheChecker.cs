@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -17,11 +18,18 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
             this.webGateway = webGateway;
         }
 
-        public async Task<CacheResponse> IsCacheOutOfDate(DateTime cacheLastUpdatedTimeUtc)
+        public async Task<CacheResponse> IsCacheOutOfDate(DateTime cacheLastUpdatedTimeUtc, CancellationToken token)
         {
             var endpoint = configurationProvider.GetConnectionStringById(connectionStringKey);
 
-            var response = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint);
+            var gatewayResponse = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint, token);
+
+            if(!gatewayResponse.Succeeded)
+            {
+                return CacheResponse.OutOfDate();
+            }
+
+            var response = gatewayResponse.Value;
 
             if(!response.IsCached)
             {

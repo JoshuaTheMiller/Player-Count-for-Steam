@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -21,22 +22,22 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
             this.cacheChecker = cacheChecker;
         }
 
-        public async Task<FetchGamePictureResponse> FetchPictureForGameAsync(int appId)
+        public async Task<FetchGamePictureResponse> FetchPictureForGameAsync(int appId, CancellationToken token)
         {
             var localStorageResponse = await storageProvider.Get(storageKey, appId.ToString());
 
             if(!localStorageResponse.Succeeded)
             {
-                return await FetchAndUpdatePictureCache(appId);
+                return await FetchAndUpdatePictureCache(appId, token);
             }
 
             var gamePicture = (CachedGamePicture)localStorageResponse.Value;
 
-            var localCacheCheck = await cacheChecker.IsCacheOutOfDate(gamePicture.TimeCachedUtc, appId);
+            var localCacheCheck = await cacheChecker.IsCacheOutOfDate(gamePicture.TimeCachedUtc, appId, token);
 
             if(localCacheCheck.IsOutOfDate)
             {
-                return await FetchAndUpdatePictureCache(appId);
+                return await FetchAndUpdatePictureCache(appId, token);
             }
 
             var pictureAsBytes = Convert.FromBase64String(gamePicture.Base64EncodedImage);
@@ -44,9 +45,9 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
             return FetchGamePictureResponse.ContainsPicture(appId, pictureAsBytes);
         }
 
-        private async Task<FetchGamePictureResponse> FetchAndUpdatePictureCache(int appId)
+        private async Task<FetchGamePictureResponse> FetchAndUpdatePictureCache(int appId, CancellationToken token)
         {
-            var picture = await pictureFetcher.FetchPictureForGameAsync(appId);
+            var picture = await pictureFetcher.FetchPictureForGameAsync(appId, token);
 
             var imageAsBase64String = Convert.ToBase64String(picture.Image);
 

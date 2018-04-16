@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -14,18 +14,27 @@ namespace SteamStatsApp
             this.stringDeserializer = stringDeserializer;
         }
 
-        public async Task<T> GetResponseFromEndpoint<T>(string url)
+        public async Task<WebRequestResponse<T>> GetResponseFromEndpoint<T>(string url, CancellationToken token)
         {
-            var responseString = await GetResponseString(url);
+            try
+            {
+                var responseString = await GetResponseString(url, token);
 
-            return stringDeserializer.Deserialize<T>(responseString);
+                var obj = stringDeserializer.Deserialize<T>(responseString);
+
+                return WebRequestFactory.Success(obj);
+            }
+            catch(System.Net.WebException e)
+            {                
+                return WebRequestFactory.Cancelled<T>();
+            }            
         }
 
-        private async Task<string> GetResponseString(string url)
+        private async Task<string> GetResponseString(string url, CancellationToken token)
         {
             var client = new HttpClient();
 
-            var response = await client.GetAsync(url);
+            var response = await client.GetAsync(url, token);
 
             return await response.Content.ReadAsStringAsync();
         }

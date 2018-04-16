@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Trfc.SteamStats.ClientServices.GamePictures
 {
     public interface IGamePictureFetcher
     {
-        Task<FetchGamePictureResponse> FetchPictureForGameAsync(int id);
+        Task<FetchGamePictureResponse> FetchPictureForGameAsync(int id, CancellationToken token);
     }
 }

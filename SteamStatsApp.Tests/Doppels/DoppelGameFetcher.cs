@@ -1,6 +1,7 @@
 ﻿using SteamStatsApp.Main;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SteamStatsApp.Tests.Doppels
@@ -9,7 +10,7 @@ namespace SteamStatsApp.Tests.Doppels
     {
         public IEnumerable<GameViewModel> Games { get; set; } = Enumerable.Empty<GameViewModel>();
 
-        public Task<IEnumerable<GameViewModel>> FetchGameViewModelsAsync()
+        public Task<IEnumerable<GameViewModel>> FetchGameViewModelsAsync(CancellationToken token)
         {
             return Task.FromResult(Games);
         }

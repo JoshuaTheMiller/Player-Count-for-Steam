@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Trfc.ClientFramework
 {
     public interface IWebGateway
     {
-        Task<T> GetResponseFromEndpoint<T>(string url);
+        Task<WebRequestResponse<T>> GetResponseFromEndpoint<T>(string url, CancellationToken token);
     }
 }

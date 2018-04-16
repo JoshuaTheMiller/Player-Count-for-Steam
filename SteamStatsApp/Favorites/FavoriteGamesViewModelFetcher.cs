@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.SteamStats.ClientServices.AvailableGames;
 using Trfc.SteamStats.ClientServices.GameFavorites;
@@ -25,9 +26,9 @@ namespace SteamStatsApp.Favorites
             this.pictureFetcher = pictureFetcher;
         }
 
-        public async Task<IEnumerable<FavoriteGameViewModel>> FetchGameViewModelsAsync()
+        public async Task<IEnumerable<FavoriteGameViewModel>> FetchGameViewModelsAsync(CancellationToken token)
         {
-            var allGames = await fetcher.FetchGamesAsync();
+            var allGames = await fetcher.FetchGamesAsync(token);
             var favoriteGames = await favoriteFetcher.GetFavoritedGames();
 
             IEnumerable<FavoriteGameViewModel> viewModels = ConvertToGameViewModels(allGames, favoriteGames);

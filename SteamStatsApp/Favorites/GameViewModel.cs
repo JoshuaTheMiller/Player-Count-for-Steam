@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
 using Trfc.SteamStats.ClientServices.GameFavorites;
@@ -68,14 +69,14 @@ namespace SteamStatsApp.Favorites
             } 
         }
 
-        protected override async Task TasksToExecuteWhileRefreshing()
+        protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
-            await LoadPicture();
+            await LoadPicture(token);
         }
 
-        private async Task LoadPicture()
+        private async Task LoadPicture(CancellationToken token)
         {
-            var response = await this.pictureFetcher.FetchPictureForGameAsync(this.Id);
+            var response = await this.pictureFetcher.FetchPictureForGameAsync(this.Id, token);
 
             if(response.HasPicture)
             {

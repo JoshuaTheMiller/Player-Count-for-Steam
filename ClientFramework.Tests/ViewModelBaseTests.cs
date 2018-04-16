@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ClientFramework.Tests.Doppels;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -47,9 +48,9 @@ namespace ClientFramework.Tests
         {
             public Action<bool> Callback { get; set; } 
 
-            protected override async Task TasksToExecuteWhileRefreshing()
+            protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
             {
-                await base.TasksToExecuteWhileRefreshing();
+                await base.TasksToExecuteWhileRefreshing(token);
 
                 Callback?.Invoke(this.IsRefreshing);
             }

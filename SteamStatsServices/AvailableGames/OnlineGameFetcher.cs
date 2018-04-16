@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -19,14 +20,19 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
             this.webGateway = webGateway;
         }
 
-        public async Task<IEnumerable<Game>> FetchGamesAsync()
+        public async Task<IEnumerable<Game>> FetchGamesAsync(CancellationToken token)
         {
             var endpoint = configurationProvider.GetConnectionStringById(connectionStringKey);
 
-            var response = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint);
+            var response = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint, token);
 
-            return response.AvailableGames.Select(ConvertGameDao).ToList();
-        }    
+            if (response.Succeeded)
+            {
+                return response.Value.AvailableGames.Select(ConvertGameDao).ToList();
+            }
+
+            return Enumerable.Empty<Game>();
+        }
 
         private Game ConvertGameDao(GameDao gameDao)
         {

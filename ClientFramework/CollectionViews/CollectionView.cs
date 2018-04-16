@@ -7,6 +7,8 @@ namespace Trfc.ClientFramework.CollectionViews
 {
     public sealed class CollectionView<T> : RangedObservableCollection<T>, ICollectionView<T>
     {
+        private object someLock = new object();
+
         private IList<T> source;
 
         new public int Count => source.Count;
@@ -35,21 +37,27 @@ namespace Trfc.ClientFramework.CollectionViews
 
         public async Task SyncNewSourceItemsAsync(IEnumerable<T> newList)
         {
-            var sourceDoesNotNeedChanging = source.SequenceEqual(newList, ItemComparer);
-
-            if(sourceDoesNotNeedChanging)
+            lock (someLock)
             {
-                return;
+                var sourceDoesNotNeedChanging = source.SequenceEqual(newList, ItemComparer);
+
+                if (sourceDoesNotNeedChanging)
+                {
+                    return;
+                }
             }
 
-            source = newList.ToList();            
+            source = newList.ToList();
 
             await Refresh();
         }
 
         public Task Refresh()
         {
-            IsRefreshing = true;
+            lock (someLock)
+            {
+                IsRefreshing = true;
+            }
 
             var sourceWithFiltersApplied = source
                 .Where(ItemPassesFilters).ToList();
@@ -70,7 +78,7 @@ namespace Trfc.ClientFramework.CollectionViews
 
             //TODO: add the ability to disable notification of changes...
             //At this point, this refresh function could average 3 notifications of a full reset.
-            if(OrderingFunction != null)
+            if (OrderingFunction != null)
             {
                 var orderedRange = OrderingFunction.Invoke(Items);
 

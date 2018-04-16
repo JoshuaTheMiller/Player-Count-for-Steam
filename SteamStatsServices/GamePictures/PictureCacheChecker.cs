@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 
@@ -18,13 +19,16 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
             this.webGateway = webGateway;
         }
 
-        public async Task<CacheResponse> IsCacheOutOfDate(DateTime cacheLastUpdatedTimeUtc, int appId)
+        public async Task<CacheResponse> IsCacheOutOfDate(DateTime cacheLastUpdatedTimeUtc, int appId, CancellationToken token)
         {
             var endpoint = configurationProvider.GetConnectionStringById(connectionStringKey);
 
             endpoint += $"?appId={appId}";
 
-            var response = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint);
+            var gatewayResponse = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint, token);
+
+
+            var response = gatewayResponse.Value;
 
             if (!response.IsCached)
             {

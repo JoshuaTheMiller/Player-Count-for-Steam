@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 using Trfc.ClientFramework.CollectionViews;
@@ -38,9 +39,9 @@ namespace SteamStatsApp.Favorites
             return arg.OrderBy(game => game.Name).ToList();
         }
 
-        private async Task RefreshGamesList()
+        private async Task RefreshGamesList(CancellationToken token)
         {
-            var originalGamesList = await fetcher.FetchGameViewModelsAsync();          
+            var originalGamesList = await fetcher.FetchGameViewModelsAsync(token);          
 
             await Games.SyncNewSourceItemsAsync(originalGamesList);        
         }
@@ -48,20 +49,19 @@ namespace SteamStatsApp.Favorites
         private async void OnFavoritesChanged(object sender, EventArgs e)
         {
             await this.Refresh();
-
         }
 
         private async Task RefreshGameViewModels()
         {
-            foreach (var game in Games)
+            foreach (var game in Games.ToList())
             {
                 await game.Refresh();
             }
         }
 
-        protected override async Task TasksToExecuteWhileRefreshing()
+        protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
-            await RefreshGamesList();
+            await RefreshGamesList(token);
             await RefreshGameViewModels();
         }        
     }

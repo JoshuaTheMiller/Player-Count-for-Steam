@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
@@ -35,7 +36,7 @@ namespace SteamStatsApp.Main
             this.fetcher = fetcher;
             this.favoriteFecher = favoriteFecher;
             this.ClearSearchText = CommandFactory.Create(OnClearSearchText);
-            this.RefreshGamesList = CommandFactory.Create(async () => await OnRefreshGamesList());
+            this.RefreshGamesList = CommandFactory.Create(async () => await Refresh());
 
             this.favoriteFecher.FavoritesChanged += OnFavoritesChanged;
 
@@ -66,9 +67,9 @@ namespace SteamStatsApp.Main
             SearchText = string.Empty;
         }
 
-        private async Task OnRefreshGamesList()
+        private async Task OnRefreshGamesList(CancellationToken token)
         {
-            var newGamesList = await fetcher.FetchGameViewModelsAsync();
+            var newGamesList = await fetcher.FetchGameViewModelsAsync(token);
 
             await Games.SyncNewSourceItemsAsync(newGamesList);
         }
@@ -78,9 +79,9 @@ namespace SteamStatsApp.Main
             await Games.Refresh();
         }
 
-        protected override async Task TasksToExecuteWhileRefreshing()
+        protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
-            await OnRefreshGamesList();
+            await OnRefreshGamesList(token);
             OnClearSearchText(null);
         }
 

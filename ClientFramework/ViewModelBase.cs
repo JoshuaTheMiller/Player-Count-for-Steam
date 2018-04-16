@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Trfc.ClientFramework
 {
     public abstract class ViewModelBase : BindableObject, IRefreshable
-    {    
+    {
+        private CancellationTokenSource cancellationTokenSource;
+
         private bool isRefreshing = false;
         public bool IsRefreshing
         {
@@ -16,24 +20,35 @@ namespace Trfc.ClientFramework
 
         protected ViewModelBase()
         {
-            RefreshCommand =  CommandFactory.Create(async () => await Refresh(), () => !IsRefreshing);
+            RefreshCommand = CommandFactory.Create(async () => await Refresh(), () => !IsRefreshing);
         }
 
+        private object refreshLock = new object();
         public async Task Refresh()
         {
-            //Threading issue?
-            if (IsRefreshing)
+            try
             {
-                return;
+                lock (refreshLock)
+                {
+                    if (IsRefreshing)
+                    {
+                        cancellationTokenSource.Cancel();
+                    }
+
+                    cancellationTokenSource = new CancellationTokenSource();
+
+                    IsRefreshing = true;
+                }
+
+                await TasksToExecuteWhileRefreshing(cancellationTokenSource.Token);
             }
-
-            IsRefreshing = true;
-
-            await TasksToExecuteWhileRefreshing();
-
+            catch (TaskCanceledException e)
+            {                
+            }
+        
             IsRefreshing = false;
         }
 
-        protected virtual Task TasksToExecuteWhileRefreshing() => Task.FromResult(default(object));        
+        protected virtual Task TasksToExecuteWhileRefreshing(CancellationToken token) => Task.FromResult(default(object));
     }
 }
