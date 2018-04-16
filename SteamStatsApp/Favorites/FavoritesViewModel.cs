@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
+using Trfc.ClientFramework.CollectionViews;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Favorites
@@ -11,28 +12,37 @@ namespace SteamStatsApp.Favorites
     {
         public string PageTitle { get; } = "Favorites";
 
-        private readonly IFavoriteGamesViewModelFetcher fetcher;
-        private readonly IFavoriteGameFetcher favoriteFecher;
+        private readonly IFavoriteGamesViewModelFetcher fetcher;          
 
-        private ICollection<GameViewModel> originalGamesList = new List<GameViewModel>();
-
-        public IRangedCollection<GameViewModel> Games { get; } = new RangedObservableCollection<GameViewModel>();
+        public ICollectionView<GameViewModel> Games { get; }
 
         public FavoritesViewModel(IFavoriteGamesViewModelFetcher viewModelFetcher,
             IFavoriteGameFetcher favoriteFecher)
         {
             this.fetcher = viewModelFetcher;
-            this.favoriteFecher = favoriteFecher;
-            this.favoriteFecher.FavoritesChanged += OnFavoritesChanged;
-        }        
+            favoriteFecher.FavoritesChanged += OnFavoritesChanged;            
+            
+            Games = CollectionViewFactory.Create(Enumerable.Empty<GameViewModel>(),
+                Enumerable.Empty<Predicate<GameViewModel>>(), 
+                ComparerFunction, 
+                OrderingFunction);
+        }
+
+        private bool ComparerFunction(GameViewModel arg1, GameViewModel arg2)
+        {
+            return arg1.Id == arg2.Id;
+        }
+
+        private IEnumerable<GameViewModel> OrderingFunction(IEnumerable<GameViewModel> arg)
+        {
+            return arg.OrderBy(game => game.Name).ToList();
+        }
 
         private async Task OnRefreshGamesList()
         {
-            originalGamesList = (await fetcher.FetchGameViewModelsAsync())
-                .OrderByDescending(game => game.IsFavorited)
-                .ThenBy(game => game.Name).ToList();
+            var originalGamesList = await fetcher.FetchGameViewModelsAsync();          
 
-            Games.ReplaceWithRange(originalGamesList);
+            await Games.SyncNewSourceItemsAsync(originalGamesList);        
         }
 
         private async void OnFavoritesChanged(object sender, EventArgs e)
