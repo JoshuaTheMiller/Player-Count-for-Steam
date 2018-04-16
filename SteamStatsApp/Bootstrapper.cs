@@ -37,7 +37,7 @@ namespace SteamStatsApp
             var availableGameFetcher = new OnlineGameFetcher(configurationProvider, webGateway);
             var gameFetcherCache = new GameFetcherCache(availableGameFetcher, cachedAvailableGamesStorageProvider, cacheChecker);
 
-            var gameFetcher = new GamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter);
+            var gameFetcher = new GamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, gameFavoriter);
 
 
             var viewModel = new MainPageViewModel(gameFetcher, gameFavoriter);

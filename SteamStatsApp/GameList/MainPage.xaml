@@ -50,7 +50,7 @@
     </ContentPage.Resources>
     <StackLayout Orientation="Vertical"
                  HorizontalOptions="FillAndExpand">
-        <Label Text="{Binding CountOfGames, StringFormat='Player Count currently supports {0} games'}"          
+        <Label Text="{Binding Games.Count, StringFormat='Player Count currently supports {0} games'}"          
                HorizontalOptions="StartAndExpand" />
         <ListView x:Name="GameList" 
                   ItemTemplate="{StaticResource Key=GameListDataTemplate}"

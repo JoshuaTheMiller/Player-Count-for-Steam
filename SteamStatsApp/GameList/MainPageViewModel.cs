@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
+using Trfc.ClientFramework.CollectionViews;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Main
@@ -17,24 +18,14 @@ namespace SteamStatsApp.Main
         public string SearchText
         {
             get => searchText;
-            set => SetField(ref searchText, value, OnSearchTextUpdated);            
+            set => SetField(ref searchText, value, async (text) => await OnSearchTextUpdated(text));
         }
 
-        public ICommand ClearSearchText { get; } 
+        public ICommand ClearSearchText { get; }
 
         public ICommand RefreshGamesList { get; }
 
-        private ICollection<GameViewModel> originalGamesList = new List<GameViewModel>();
-
-        public IRangedCollection<GameViewModel> Games { get; } = new RangedObservableCollection<GameViewModel>();
-
-        private int countOfGames = 0;
-
-        public int CountOfGames
-        {
-            get => countOfGames;
-            private set => SetField(ref countOfGames, value);
-        }
+        public ICollectionView<GameViewModel> Games { get; }
 
         public string PageTitle { get; } = "All Games";
 
@@ -45,7 +36,29 @@ namespace SteamStatsApp.Main
             this.favoriteFecher = favoriteFecher;
             this.ClearSearchText = CommandFactory.Create(OnClearSearchText);
             this.RefreshGamesList = CommandFactory.Create(async () => await OnRefreshGamesList());
+
             this.favoriteFecher.FavoritesChanged += OnFavoritesChanged;
+
+            Games = CollectionViewFactory.Create(Enumerable.Empty<GameViewModel>(),
+                new Predicate<GameViewModel>[] { SearchTextFilter },
+                GameComparer,
+                Orderer);
+        }
+
+        private IEnumerable<GameViewModel> Orderer(IEnumerable<GameViewModel> arg)
+        {
+            return arg.OrderBy(game => game.Name).ToList();
+        }
+
+        private bool SearchTextFilter(GameViewModel arg1)
+        {
+            var matchesSearchText = arg1.Name.Contains(SearchText, StringComparison.OrdinalIgnoreCase);
+            return matchesSearchText;
+        }
+
+        private bool GameComparer(GameViewModel arg1, GameViewModel arg2)
+        {
+            return arg1.Id == arg2.Id;
         }
 
         private void OnClearSearchText(object obj)
@@ -55,40 +68,28 @@ namespace SteamStatsApp.Main
 
         private async Task OnRefreshGamesList()
         {
-            originalGamesList = (await fetcher.FetchGameViewModelsAsync()).OrderBy(game => game.Name).ToList();
+            var newGamesList = await fetcher.FetchGameViewModelsAsync();
 
-            CountOfGames = originalGamesList.Count;
-
-            SetGameList(originalGamesList);
+            await Games.SyncNewSourceItemsAsync(newGamesList);
         }
 
-        private void OnSearchTextUpdated(string obj)
+        private async Task OnSearchTextUpdated(string obj)
         {
-            if (string.IsNullOrWhiteSpace(obj))
-            {
-                SetGameList(originalGamesList);
-                return;
-            }
-
-            var filteredList = originalGamesList.Where(game => game.Name.Contains(obj, StringComparison.OrdinalIgnoreCase)).ToList();
-
-            SetGameList(filteredList);
-        }
-
-        private void SetGameList(IEnumerable<GameViewModel> newList)
-        { 
-            Games.ReplaceWithRange(newList);
-        }
-
-        private async void OnFavoritesChanged(object sender, EventArgs e)
-        {
-            await this.Refresh();
+            await Games.Refresh();
         }
 
         protected override async Task TasksToExecuteWhileRefreshing()
         {
             await OnRefreshGamesList();
             OnClearSearchText(null);
+        }
+
+        private async void OnFavoritesChanged(object sender, EventArgs e)
+        {
+            foreach (var item in Games.Source)
+            {           
+                await item.Refresh();
+            }
         }
     }
 }

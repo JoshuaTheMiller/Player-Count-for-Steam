@@ -6,7 +6,7 @@ using Trfc.ClientFramework;
 
 namespace Trfc.SteamStats.ClientServices.GameFavorites
 {
-    public sealed class LocalGameFavorites : IGameFavoriter, IFavoriteGameFetcher
+    public sealed class LocalGameFavorites : IGameFavoriter, IFavoriteGameFetcher, IFavoriteGameQuerier
     {
         private readonly IStorageProvider<GameFavoritesDao> storageProvider;
         private readonly IToastMessageService toastMessageService;
@@ -90,6 +90,11 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
             {
                 FavoriteIds = favoriteIds.Keys.ToList()
             };
+        }
+
+        public Task<bool> IsGameFavorite(int gameId)
+        {
+            return Task.FromResult(favoriteIds.ContainsKey(gameId));
         }
 
         public sealed class GameFavoritesDao

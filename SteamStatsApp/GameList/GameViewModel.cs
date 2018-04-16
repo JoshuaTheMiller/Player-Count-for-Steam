@@ -8,6 +8,7 @@ namespace SteamStatsApp.Main
     public sealed class GameViewModel : ViewModelBase
     {
         private readonly IGameFavoriter favoriter;
+        private readonly IFavoriteGameQuerier querier;
 
         public string Name { get; }
 
@@ -22,12 +23,13 @@ namespace SteamStatsApp.Main
 
         public ICommand ToggleFavoriteCommand { get; }
   
-        public GameViewModel(string name, int id, bool isFavorited, IGameFavoriter favoriter)
+        public GameViewModel(string name, int id, bool isFavorited, IGameFavoriter favoriter, IFavoriteGameQuerier querier)
         {
             Name = name;
             Id = id;
             this.IsFavorited = isFavorited;
             this.favoriter = favoriter;
+            this.querier = querier;
             this.ToggleFavoriteCommand = CommandFactory.Create(async () => await ToggleFavorite());
         }
 
@@ -56,6 +58,11 @@ namespace SteamStatsApp.Main
 
                 IsFavorited = !result;
             } 
+        }
+
+        protected override async Task TasksToExecuteWhileRefreshing()
+        {
+            IsFavorited = await querier.IsGameFavorite(this.Id);
         }
     }
 }
