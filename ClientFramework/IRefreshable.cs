@@ -1,13 +1,10 @@
 ﻿using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Trfc.ClientFramework
 {
-    internal interface IRefreshable
+    public interface IRefreshable
     {
-        bool IsRefreshing { get; }
-
-        ICommand RefreshCommand { get; }
+        bool IsRefreshing { get; }        
 
         Task Refresh();
     }
