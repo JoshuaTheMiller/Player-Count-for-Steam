@@ -42,7 +42,8 @@ namespace Trfc.ClientFramework.CollectionViews
                 return;
             }
 
-            source = source.Union(newList, ItemComparer).ToList();
+            source = newList.ToList();            
+
             await Refresh();
         }
 
