@@ -29,9 +29,12 @@ namespace Trfc.SteamStats.ClientServices.GameFavorites
             await RefreshFavorites();
 
             //TODO: Split out into rules component.
-            if(favoriteIds.Count == 5)
+            //TODO: Move max into a configuration value.
+            //Decreasing max would break user expectations.
+            var maxAmountOfFavorites = 10;
+            if(favoriteIds.Count == maxAmountOfFavorites)
             {
-                toastMessageService.ShortAlert("You cannot have more than 5 favorites!");
+                toastMessageService.ShortAlert($"You cannot have more than {maxAmountOfFavorites} favorites!");
                 return false;
             }
 
