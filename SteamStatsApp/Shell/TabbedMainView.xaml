@@ -4,7 +4,7 @@
             x:Class="SteamStatsApp.Shell.TabbedMainView">
     <TabbedPage.ItemTemplate>
         <DataTemplate>
-            <ContentPage Title="{Binding BindingContext.PageTitle}"
+            <ContentPage Title="{Binding BindingContext.PageTitle}"                         
                          Content="{Binding .}">
             </ContentPage>
         </DataTemplate>

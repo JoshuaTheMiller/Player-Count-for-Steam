@@ -23,7 +23,9 @@
                         </BoxView>
                         <Button Grid.Column="0"
                                 Text="☆"
-                                Command="{Binding ToggleFavoriteCommand}">
+                                Command="{Binding ToggleFavoriteCommand}"
+                                BackgroundColor="Transparent"
+                                FontSize="Medium">
                             <Button.Triggers>
                                 <DataTrigger TargetType="Button"
                                              Binding="{Binding IsFavorited}"
@@ -60,8 +62,9 @@
                   IsRefreshing="{Binding IsRefreshing}" />
         <StackLayout Orientation="Horizontal">
             <Entry VerticalOptions="Start"
-               HorizontalOptions="FillAndExpand"           
-               Text="{Binding SearchText}"/>
+                   Placeholder="Search"                   
+                   HorizontalOptions="FillAndExpand"           
+                   Text="{Binding SearchText}"/>
             <Button Text="Refresh"
                 Command="{Binding RefreshCommand}"/>
             <Button Text="Clear"
