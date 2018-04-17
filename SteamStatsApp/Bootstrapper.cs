@@ -5,12 +5,13 @@ using Trfc.ClientFramework;
 using Trfc.SteamStats.ClientServices.AvailableGames;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 using Trfc.SteamStats.ClientServices.GamePictures;
+using Trfc.SteamStats.ClientServices.PlayerCount;
 using Xamarin.Forms;
 
 namespace SteamStatsApp
 {
     internal sealed class Bootstrapper
-    {        
+    {
         //TODO: Abstract Application
         public static BootstrappedApplication Bootstrap(IToastMessageService toastMessageService, Application app)
         {
@@ -22,7 +23,8 @@ namespace SteamStatsApp
                 { "AvailableGames", $"{mainEndpoint}api/v1.0/availablegames"},
                 { "AvailableGamesCacheTime", $"{mainEndpoint}api/v1.0/cachedatetime/availablegames"},
                 { "GamePicture", $"{mainEndpoint}api/v1.0/appHeader"},
-                { "GamePictureCacheTime", $"{mainEndpoint}api/v1.0/cachedatetime/apppicture"}
+                { "GamePictureCacheTime", $"{mainEndpoint}api/v1.0/cachedatetime/apppicture"},
+                { "PlayerCount", $"{mainEndpoint}/api/v1.0/playercount"}
             };
 
             var stringSerializer = new StringSerializer();
@@ -49,7 +51,9 @@ namespace SteamStatsApp
             var cachedPictureStorageProvider = new StorageProvider<CachedGamePicture>(app, stringDeserializer, stringSerializer);
             var pictureCacheFetcher = new PictureFetcherCache(pictureFetcher, cachedPictureStorageProvider, pictureCacheChecker);
 
-            var favoritesViewModelFetcher = new FavoriteGamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, pictureCacheFetcher);
+            var playerCountFetcher = new PlayerCountFetcher(configurationProvider, webGateway);
+
+            var favoritesViewModelFetcher = new FavoriteGamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, pictureCacheFetcher, playerCountFetcher);
             var favoritesViewModel = new FavoritesViewModel(favoritesViewModelFetcher, gameFavoriter);
             var favoritesView = new FavoritesView()
             {

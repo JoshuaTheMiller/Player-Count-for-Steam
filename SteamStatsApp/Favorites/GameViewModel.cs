@@ -1,9 +1,11 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 using Trfc.SteamStats.ClientServices.GamePictures;
+using Trfc.SteamStats.ClientServices.PlayerCount;
 
 namespace SteamStatsApp.Favorites
 {
@@ -11,6 +13,7 @@ namespace SteamStatsApp.Favorites
     {
         private readonly IGameFavoriter favoriter;
         private readonly IGamePictureFetcher pictureFetcher;
+        private readonly IPlayerCountFetcher playerCountFetcher;
 
         public string Name { get; }
 
@@ -28,17 +31,28 @@ namespace SteamStatsApp.Favorites
         {
             get => image;
             private set => SetField(ref image, value);
-        }        
+        }
+
+        private int playerCount;
+        public int PlayerCount
+        {
+            get => playerCount;
+            private set => SetField(ref playerCount, value);
+        }
 
         public ICommand ToggleFavoriteCommand { get; }
   
-        public FavoriteGameViewModel(string name, int id, bool isFavorited, IGameFavoriter favoriter, IGamePictureFetcher pictureFetcher)
+        public FavoriteGameViewModel(string name, int id, bool isFavorited, 
+            IGameFavoriter favoriter, 
+            IGamePictureFetcher pictureFetcher,
+            IPlayerCountFetcher playerCountFetcher)
         {
             Name = name;
             Id = id;
             this.IsFavorited = isFavorited;
             this.favoriter = favoriter;
             this.pictureFetcher = pictureFetcher;
+            this.playerCountFetcher = playerCountFetcher;
             this.ToggleFavoriteCommand = CommandFactory.Create(async () => await ToggleFavorite());
         }
 
@@ -72,6 +86,17 @@ namespace SteamStatsApp.Favorites
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
             await LoadPicture(token);
+            await LoadPlayerCount(token);
+        }
+
+        private async Task LoadPlayerCount(CancellationToken token)
+        {
+            var response = await this.playerCountFetcher.RetrievePlayerCount(this.Id, token);
+
+            if(response.CountCheckWasSuccessfull)
+            {
+                this.PlayerCount = response.PlayerCount;
+            }
         }
 
         private async Task LoadPicture(CancellationToken token)

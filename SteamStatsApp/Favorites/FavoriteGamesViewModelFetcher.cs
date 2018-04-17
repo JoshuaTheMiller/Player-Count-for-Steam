@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Trfc.SteamStats.ClientServices.AvailableGames;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 using Trfc.SteamStats.ClientServices.GamePictures;
+using Trfc.SteamStats.ClientServices.PlayerCount;
 
 namespace SteamStatsApp.Favorites
 {
@@ -14,16 +15,19 @@ namespace SteamStatsApp.Favorites
         private readonly IGameFavoriter favoriter;
         private readonly IFavoriteGameFetcher favoriteFetcher;
         private readonly IGamePictureFetcher pictureFetcher;
+        private readonly IPlayerCountFetcher playerCountFetcher;
 
         public FavoriteGamesViewModelFetcher(IAvailableGamesFetcher fetcher,
             IFavoriteGameFetcher favoriteFetcher,
             IGameFavoriter favoriter,
-            IGamePictureFetcher pictureFetcher)
+            IGamePictureFetcher pictureFetcher,
+            IPlayerCountFetcher playerCountFetcher)
         {
             this.fetcher = fetcher;
             this.favoriteFetcher = favoriteFetcher;
             this.favoriter = favoriter;
             this.pictureFetcher = pictureFetcher;
+            this.playerCountFetcher = playerCountFetcher;
         }
 
         public async Task<IEnumerable<FavoriteGameViewModel>> FetchGameViewModelsAsync(CancellationToken token)
@@ -46,7 +50,7 @@ namespace SteamStatsApp.Favorites
 
         private System.Func<Game, FavoriteGameViewModel> ConvertToViewModel(IEnumerable<int> favoriteGames)
         {
-            return game => new FavoriteGameViewModel(game.Name, game.Id, favoriteGames.Contains(game.Id), this.favoriter, this.pictureFetcher);
+            return game => new FavoriteGameViewModel(game.Name, game.Id, favoriteGames.Contains(game.Id), this.favoriter, this.pictureFetcher, this.playerCountFetcher);
         }
     }
 }

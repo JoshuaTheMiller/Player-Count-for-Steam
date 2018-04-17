@@ -14,16 +14,23 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
                         <Image Grid.ColumnSpan="2" 
+                               Grid.RowSpan="2"
                                Source="{Binding Image, Converter={StaticResource BytesToImage}}"
                                VerticalOptions="FillAndExpand"
                                HorizontalOptions="FillAndExpand"
                                Aspect="AspectFill"
                                HeightRequest="70" />
                         <BoxView Grid.ColumnSpan="2" 
+                                 Grid.RowSpan="2"
                                  Color="Black"
                                  Opacity=".6" />
                         <Button Grid.Column="0"
+                                Grid.RowSpan="2"
                                 Text="☆"
                                 Command="{Binding ToggleFavoriteCommand}"
                                 BackgroundColor="Transparent"
@@ -37,12 +44,19 @@
                                 </DataTrigger>
                             </Button.Triggers>
                         </Button>
-                        <Label Grid.Column="1" 
-                               VerticalOptions="Center"
-                               Text="{Binding Name}"
-                               BackgroundColor="Transparent"
-                               TextColor="White"
-                               FontSize="Medium"/>
+                        <StackLayout Grid.Column="1"
+                                     Grid.RowSpan="2"
+                                     VerticalOptions="CenterAndExpand">
+                            <Label Text="{Binding Name}"
+                                   BackgroundColor="Transparent"
+                                   TextColor="White"
+                                   FontSize="Medium"/>
+                            <Label Text="{Binding PlayerCount, StringFormat='{0} Players Online'}"
+                                   BackgroundColor="Transparent"
+                                   TextColor="White"
+                                   FontSize="Small"/>
+                        </StackLayout>
+
                     </Grid>
                 </ViewCell>
             </DataTemplate>
@@ -74,7 +88,8 @@
                       RefreshCommand="{Binding RefreshCommand}"
                       CachingStrategy="RecycleElement"
                       IsRefreshing="{Binding IsRefreshing}"
-                      IsVisible="True" />
+                      IsVisible="True" 
+                      HasUnevenRows="True"/>
             <Button Grid.Row="1"
                     Text="Refresh"
                     Command="{Binding RefreshCommand}"/>
