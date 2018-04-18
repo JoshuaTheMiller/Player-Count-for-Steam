@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SteamStatsApp.UWP")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SteamStatsApp.UWP")]
-[assembly: AssemblyCopyright("Copyright ©  2015")]
+[assembly: AssemblyCompany("TRFC")]
+[assembly: AssemblyProduct("Player Count for Steam")]
+[assembly: AssemblyCopyright("Copyright ©  2080")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
