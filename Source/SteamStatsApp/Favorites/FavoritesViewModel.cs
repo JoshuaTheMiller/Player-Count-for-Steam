@@ -53,10 +53,9 @@ namespace SteamStatsApp.Favorites
 
         private async Task RefreshGameViewModels()
         {
-            foreach (var game in Games.ToList())
-            {
-                await game.Refresh();
-            }
+            var refreshList = Games.Select(game => game.Refresh()).ToList();
+
+            await Task.WhenAll(refreshList);
         }
 
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
