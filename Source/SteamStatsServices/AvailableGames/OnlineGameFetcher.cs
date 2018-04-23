@@ -46,13 +46,21 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
         private sealed class ResponseDao
         {
             public List<GameDao> AvailableGames { get; set; }
+            public ResponseDao(List<GameDao> availableGames)
+            {
+                AvailableGames = availableGames;
+            }
         }
 
         private sealed class GameDao
-        {
+        {            
             public string Name { get; set; }
-
             public int Id { get; set; }
+            public GameDao(string name, int id)
+            {
+                Name = name;
+                Id = id;
+            }
         }
     }
 }
