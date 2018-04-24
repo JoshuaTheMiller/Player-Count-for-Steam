@@ -13,7 +13,7 @@ namespace Trfc.ClientFramework.CollectionViews
 
         IEnumerable<Predicate<T>> Filters { get; }
 
-        IEqualityComparer<T> ItemComparer { get; }
+        IEqualityComparer<T> ItemComparer { get; }        
 
         Func<IEnumerable<T>, IEnumerable<T>> OrderingFunction { get; }        
 

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Trfc.ClientFramework.CollectionViews
@@ -18,16 +20,20 @@ namespace Trfc.ClientFramework.CollectionViews
 
         public Func<IEnumerable<T>, IEnumerable<T>> OrderingFunction { get; }
 
+        public SyncParameters<T> SyncParameters { get; }
+
         internal CollectionView(IEnumerable<T> source,
             IEnumerable<Predicate<T>> filters,
             IEqualityComparer<T> itemComparer,
-            Func<IEnumerable<T>, IEnumerable<T>> orderingFunction)
+            Func<IEnumerable<T>, IEnumerable<T>> orderingFunction,
+            SyncParameters<T> syncParameters)
             : base(source)
         {
             this.source = source.ToList();
             this.Filters = filters;
             this.ItemComparer = itemComparer;
             this.OrderingFunction = orderingFunction;
+            this.SyncParameters = syncParameters;
         }
 
         public void SyncNewSourceItems(IEnumerable<T> newList)
@@ -39,9 +45,60 @@ namespace Trfc.ClientFramework.CollectionViews
                 return;
             }
 
-            source = newList.ToList();
+            if (this.SyncParameters.HasDefaultKeySelector)
+            {
+                DoStupidSync(newList);
+            }
+            else
+            {
+                DoFancySync(newList);
+            }
 
+            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
             Refresh();
+        }
+
+        private void DoFancySync(IEnumerable<T> newList)
+        {
+            var someList = new List<T>();
+
+            var keySelector = this.SyncParameters.KeySelector;
+
+            // If an item in source was not in newList, that item would not make it past the GroupJoin.
+            // If an item in source is present in newList, that item would be passed to the result selector as oldItem,
+            // the matching item would be passed as newItem.
+            // If an item was in newList and not in sourceList, that item would be passed to the result selector as newItem,
+            // and oldItem would be set to its default.
+            var what = newList.GroupJoin(source, keySelector, keySelector, (left, right) => new GroupJoinResult(left, right))
+                    .SelectMany(temp => temp.Old.DefaultIfEmpty(), PassOldAndNewValuesIntoSelector).Cast<T>().ToList();
+
+            source = what;
+        }
+
+        private object PassOldAndNewValuesIntoSelector(GroupJoinResult arg1, T arg2)
+        {            
+            if (arg1.Old.Count() == 0)
+            {
+                return this.SyncParameters.ResultSelector(default(T), arg1.New);                
+            }
+
+            return this.SyncParameters.ResultSelector(arg1.Old.First(), arg1.New);
+        }
+
+        private class GroupJoinResult
+        {
+            public T New { get; set; }
+            public IEnumerable<T> Old { get; set; }
+            public GroupJoinResult(T left, IEnumerable<T> right)
+            {
+                New = left;
+                Old = right;
+            }
+        }
+
+        private void DoStupidSync(IEnumerable<T> newList)
+        {
+            source = newList.ToList();
         }
 
         public void Refresh()
@@ -51,9 +108,16 @@ namespace Trfc.ClientFramework.CollectionViews
 
             if (OrderingFunction != null)
             {
-                var orderedRange = OrderingFunction.Invoke(sourceWithFiltersApplied);
+                var orderedRange = OrderingFunction.Invoke(sourceWithFiltersApplied).ToList();
 
-                this.ReplaceWithRange(orderedRange);
+                Items.Clear();
+
+                foreach (var item in orderedRange)
+                {
+                    Items.Add(item);
+                }
+
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, orderedRange, 0, 0));
             }
             else
             {

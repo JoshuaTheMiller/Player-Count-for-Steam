@@ -27,7 +27,13 @@ namespace SteamStatsApp.Favorites
             Games = CollectionViewFactory.Create(Enumerable.Empty<FavoriteGameViewModel>(),
                 Enumerable.Empty<Predicate<FavoriteGameViewModel>>(), 
                 ComparerFunction, 
-                OrderingFunction);
+                OrderingFunction,
+                SyncParameters.WithDefaultResultSelector<FavoriteGameViewModel>(KeySelector));
+        }
+
+        private object KeySelector(FavoriteGameViewModel arg)
+        {
+            return arg.Id;
         }
 
         private bool ComparerFunction(FavoriteGameViewModel arg1, FavoriteGameViewModel arg2)
