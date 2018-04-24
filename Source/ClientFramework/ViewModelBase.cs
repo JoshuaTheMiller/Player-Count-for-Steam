@@ -43,10 +43,14 @@ namespace Trfc.ClientFramework
 
                 await TasksToExecuteWhileRefreshing(cancellationTokenSource.Token);
             }
+#pragma warning disable CS0168 // Variable is declared but never used
             catch (TaskCanceledException e)
+#pragma warning restore CS0168 // Variable is declared but never used
             {                
             }
-            catch(OperationCanceledException e)
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch (OperationCanceledException e)
+#pragma warning restore CS0168 // Variable is declared but never used
             {                
             }
 
