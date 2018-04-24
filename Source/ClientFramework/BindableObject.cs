@@ -16,11 +16,26 @@ namespace Trfc.ClientFramework
             }
 
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }                    
+
+        public bool SetField<T>(ref T field, T newValue, Action<T> callback, [CallerMemberName] string propertyName = "")
+        {
+            return SetField(ref field, newValue, DefaultCompareOperation, callback, propertyName);
         }
 
         public bool SetField<T>(ref T field, T newValue, [CallerMemberName] string propertyName = "")
         {
-            if (field?.Equals(newValue) ?? false)
+            return SetField(ref field, newValue, DefaultCompareOperation, DefaultCallback, propertyName);
+        }
+
+        public bool SetField<T>(ref T field, T newValue, Func<T, T, bool> comparisonOperator, [CallerMemberName] string propertyName = "")
+        {
+            return SetField(ref field, newValue, comparisonOperator, DefaultCallback, propertyName);
+        }
+
+        public bool SetField<T>(ref T field, T newValue, Func<T, T, bool> comparisonOperator, Action<T> callback, [CallerMemberName] string propertyName = "")
+        {
+            if (comparisonOperator(field, newValue))
             {
                 return false;
             }
@@ -29,18 +44,23 @@ namespace Trfc.ClientFramework
 
             NotifyPropertyChanged(propertyName);
 
+            callback.Invoke(newValue);
+
             return true;
         }
 
-        public bool SetField<T>(ref T field, T newValue, Action<T> callback, [CallerMemberName] string propertyName = "")
+        private bool DefaultCompareOperation<T>(T field, T newValue)
         {
-            if (SetField(ref field, newValue, propertyName))
+            if(field == null && newValue == null)
             {
-                callback.Invoke(newValue);
                 return true;
             }
 
-            return false;
+            return field?.Equals(newValue) ?? false;
+        }
+
+        private void DefaultCallback<T>(T obj)
+        {
         }
     }
 }
