@@ -20,7 +20,7 @@ namespace SteamStatsApp.Main
         public string SearchText
         {
             get => searchText;
-            set => SetField(ref searchText, value, async (text) => await OnSearchTextUpdated(text));
+            set => SetField(ref searchText, value, OnSearchTextUpdated);
         }
 
         public ICommand ClearSearchText { get; }
@@ -72,12 +72,12 @@ namespace SteamStatsApp.Main
         {
             var newGamesList = await fetcher.FetchGameViewModelsAsync(token);
 
-            await Games.SyncNewSourceItemsAsync(newGamesList);
+            Games.SyncNewSourceItems(newGamesList);
         }
 
-        private async Task OnSearchTextUpdated(string obj)
+        private void OnSearchTextUpdated(string obj)
         {
-            await Games.Refresh();
+            Games.Refresh();
         }
 
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)

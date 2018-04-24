@@ -44,7 +44,7 @@ namespace SteamStatsApp.Favorites
         {
             var originalGamesList = await fetcher.FetchGameViewModelsAsync(token);          
 
-            await Games.SyncNewSourceItemsAsync(originalGamesList);        
+            Games.SyncNewSourceItems(originalGamesList);        
         }
 
         private async void OnFavoritesChanged(object sender, EventArgs e)

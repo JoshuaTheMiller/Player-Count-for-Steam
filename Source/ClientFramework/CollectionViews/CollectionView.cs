@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Trfc.ClientFramework.CollectionViews
 {
     public sealed class CollectionView<T> : RangedObservableCollection<T>, ICollectionView<T>
     {
-        private object someLock = new object();
-
         private IList<T> source;
 
         new public int Count => source.Count;
@@ -20,8 +17,6 @@ namespace Trfc.ClientFramework.CollectionViews
         public IEqualityComparer<T> ItemComparer { get; }
 
         public Func<IEnumerable<T>, IEnumerable<T>> OrderingFunction { get; }
-
-        public bool IsRefreshing { get; private set; }
 
         internal CollectionView(IEnumerable<T> source,
             IEnumerable<Predicate<T>> filters,
@@ -35,59 +30,43 @@ namespace Trfc.ClientFramework.CollectionViews
             this.OrderingFunction = orderingFunction;
         }
 
-        public async Task SyncNewSourceItemsAsync(IEnumerable<T> newList)
+        public void SyncNewSourceItems(IEnumerable<T> newList)
         {
-            lock (someLock)
-            {
-                var sourceDoesNotNeedChanging = source.SequenceEqual(newList, ItemComparer);
+            var sourceDoesNotNeedChanging = source.SequenceEqual(newList, ItemComparer);
 
-                if (sourceDoesNotNeedChanging)
-                {
-                    return;
-                }
+            if (sourceDoesNotNeedChanging)
+            {
+                return;
             }
 
             source = newList.ToList();
 
-            await Refresh();
+            Refresh();
         }
 
-        public Task Refresh()
+        public void Refresh()
         {
-            lock (someLock)
-            {
-                IsRefreshing = true;
-            }
-
             var sourceWithFiltersApplied = source
                 .Where(ItemPassesFilters).ToList();
 
-            var itemsToRemove = Items
-                .Except(sourceWithFiltersApplied, ItemComparer).ToList();
-
-            PerformActionOnItems(itemsToRemove, Remove, RemoveRange);
-
-            var itemsToAdd = sourceWithFiltersApplied
-                .Except(Items, ItemComparer).ToList();
-
-            PerformActionOnItems(itemsToAdd, Add, AddRange);
-
-            //This kind of defeats the attempts above at trying to be 
-            //efficient with notifing of list changes as calling ReplaceWithRange
-            //calls for an entire reset notification.
-
-            //TODO: add the ability to disable notification of changes...
-            //At this point, this refresh function could average 3 notifications of a full reset.
             if (OrderingFunction != null)
             {
-                var orderedRange = OrderingFunction.Invoke(Items);
+                var orderedRange = OrderingFunction.Invoke(sourceWithFiltersApplied);
 
                 this.ReplaceWithRange(orderedRange);
             }
+            else
+            {
+                var itemsToRemove = Items
+                    .Except(sourceWithFiltersApplied, ItemComparer).ToList();
 
-            IsRefreshing = false;
+                PerformActionOnItems(itemsToRemove, Remove, RemoveRange);
 
-            return Task.FromResult(default(object));
+                var itemsToAdd = sourceWithFiltersApplied
+                    .Except(Items, ItemComparer).ToList();
+
+                PerformActionOnItems(itemsToAdd, Add, AddRange);
+            }
         }
 
         new private void Remove(T itemToRemove)
