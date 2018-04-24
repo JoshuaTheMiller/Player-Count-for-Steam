@@ -10,6 +10,7 @@ using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Main
 {
+    [Preserve(AllMembers = true)]
     public sealed class MainPageViewModel : ViewModelBase, INavigationTarget
     {
         private readonly IGamesViewModelFetcher fetcher;

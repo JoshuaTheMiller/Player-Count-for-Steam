@@ -45,11 +45,19 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
             return FetchGamePictureResponse.NoPicture(id);
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class ResponseDao
-        {
-            public string Image { get; set; }
-            public bool IsValid { get; set; }
-            public string Message { get; set; }
+        {            
+
+            public string Image { get; }
+            public bool IsValid { get; }
+            public string Message { get; }
+            public ResponseDao(string image, bool isValid, string message)
+            {
+                Image = image;
+                IsValid = isValid;
+                Message = message;
+            }
         }
     }
 }

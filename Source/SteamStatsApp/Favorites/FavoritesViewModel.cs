@@ -9,6 +9,7 @@ using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Favorites
 {
+    [Preserve(AllMembers = true)]
     public sealed class FavoritesViewModel : ViewModelBase, INavigationTarget
     {
         public string PageTitle { get; } = "Favorites";

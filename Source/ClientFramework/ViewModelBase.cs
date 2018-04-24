@@ -1,21 +1,21 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace Trfc.ClientFramework
 {
+    [Preserve(AllMembers = true)]
     public abstract class ViewModelBase : BindableObject, IRefreshable
     {
         private CancellationTokenSource cancellationTokenSource;
 
-        private bool isRefreshing = false;
+        private bool isRefreshing = false;        
         public bool IsRefreshing
         {
             get => isRefreshing;
             private set => SetField(ref isRefreshing, value);
         }
-
+        
         public ICommand RefreshCommand { get; }
 
         protected ViewModelBase()

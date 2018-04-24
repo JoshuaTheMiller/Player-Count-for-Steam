@@ -43,10 +43,16 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
             return CacheResponse.OutOfDate();
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class ResponseDao
         {
             public bool IsCached { get; set; }
             public DateTime CachedDateTimeUtc { get; set; }
+            public ResponseDao(bool isCached, DateTime cachedDateTimeUtc)
+            {
+                IsCached = isCached;
+                CachedDateTimeUtc = cachedDateTimeUtc;
+            }
         }
     }
 }

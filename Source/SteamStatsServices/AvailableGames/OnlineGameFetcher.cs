@@ -43,19 +43,21 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
             };
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class ResponseDao
         {
-            public List<GameDao> AvailableGames { get; set; }
+            public List<GameDao> AvailableGames { get; }
             public ResponseDao(List<GameDao> availableGames)
             {
                 AvailableGames = availableGames;
             }
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class GameDao
         {            
-            public string Name { get; set; }
-            public int Id { get; set; }
+            public string Name { get; }
+            public int Id { get; }
             public GameDao(string name, int id)
             {
                 Name = name;

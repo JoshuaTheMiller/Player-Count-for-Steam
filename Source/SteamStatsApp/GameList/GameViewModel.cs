@@ -6,6 +6,7 @@ using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Main
 {
+    [Preserve(AllMembers = true)]    
     public sealed class GameViewModel : ViewModelBase
     {
         private readonly IGameFavoriter favoriter;

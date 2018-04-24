@@ -45,18 +45,28 @@ namespace Trfc.SteamStats.ClientServices.PlayerCount
             return PlayerCountResponse.Success(playerCountResponse.PlayerCount);            
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class ResponseDao
-        {
-            public IEnumerable<PlayerCountDao> PlayerCounts { get; set; }
+        {            
+            public IEnumerable<PlayerCountDao> PlayerCounts { get; }
+            public ResponseDao(IEnumerable<PlayerCountDao> playerCounts)
+            {
+                PlayerCounts = playerCounts;
+            }
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class PlayerCountDao
-        {
-            public int Id { get; set; }
-
-            public bool IsSupported { get; set; }
-
-            public int PlayerCount { get; set; }
+        {           
+            public int Id { get; }
+            public bool IsSupported { get; }
+            public int PlayerCount { get; }
+            public PlayerCountDao(int id, bool isSupported, int playerCount)
+            {
+                Id = id;
+                IsSupported = isSupported;
+                PlayerCount = playerCount;
+            }
         }
     }
 }

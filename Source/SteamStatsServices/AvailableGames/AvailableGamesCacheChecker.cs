@@ -44,10 +44,16 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
             return CacheResponse.OutOfDate();
         }
 
+        [Preserve(AllMembers = true)]
         private sealed class ResponseDao
-        {
-            public bool IsCached { get; set; }
-            public DateTime CachedDateTimeUtc { get; set; }
+        {            
+            public bool IsCached { get; }
+            public DateTime CachedDateTimeUtc { get; }
+            public ResponseDao(bool isCached, DateTime cachedDateTimeUtc)
+            {
+                IsCached = isCached;
+                CachedDateTimeUtc = cachedDateTimeUtc;
+            }
         }
     }
 }
