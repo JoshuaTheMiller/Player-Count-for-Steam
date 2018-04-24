@@ -86,8 +86,9 @@ namespace SteamStatsApp.Favorites
 
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
-            await LoadPicture(token);
-            await LoadPlayerCount(token);
+            var taskList = new[] { LoadPicture(token), LoadPlayerCount(token) };
+
+            await Task.WhenAll(taskList);
         }
 
         private async Task LoadPlayerCount(CancellationToken token)
