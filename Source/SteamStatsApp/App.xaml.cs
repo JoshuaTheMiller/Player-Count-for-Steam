@@ -24,10 +24,7 @@ namespace SteamStatsApp
 
 		protected override async void OnStart ()
 		{
-            foreach(var view in bootstrappedApplication.Views)
-            {
-                await ((ViewModelBase)view.BindingContext).Refresh();
-            };            
+            await bootstrappedApplication.RefreshAllViewsAsync();
         }
 
 		protected override void OnSleep ()
@@ -37,10 +34,7 @@ namespace SteamStatsApp
 
 		protected override async void OnResume ()
 		{
-            foreach (var view in bootstrappedApplication.Views)
-            {
-                await((ViewModelBase)view.BindingContext).Refresh();
-            };
+            await bootstrappedApplication.RefreshAllViewsAsync();
         }
 	}
 }
