@@ -30,8 +30,11 @@ namespace SteamStatsApp
             var stringSerializer = new StringSerializer();
             var stringDeserializer = new StringDeserializer();
 
-            var webGateway = new WebGateway(stringDeserializer);
-            var configurationProvider = new ConfigurationProvider(configurationValues);            
+            var networkChecker = new NetworkChecker();            
+            var webGateway = new WebGateway(stringDeserializer, networkChecker);
+            var configurationProvider = new ConfigurationProvider(configurationValues);
+
+            new ConnectivityNotifier(networkChecker, toastMessageService);
 
             var storageProvider = new StorageProvider<LocalGameFavorites.GameFavoritesDao>(app, stringDeserializer, stringSerializer);
             var cachedAvailableGamesStorageProvider = new StorageProvider<CachedGameList>(app, stringDeserializer, stringSerializer);
@@ -44,7 +47,7 @@ namespace SteamStatsApp
 
             var gameViewModelFetcher = new GamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, gameFavoriter);
 
-            var mainPaigeViewModel = new MainPageViewModel(gameViewModelFetcher, gameFavoriter);
+            var mainPaigeViewModel = new MainPageViewModel(gameViewModelFetcher, gameFavoriter, networkChecker);
 
             var pictureFetcher = new GamePictureFetcher(configurationProvider, webGateway);
             var pictureCacheChecker = new PictureCacheChecker(configurationProvider, webGateway);
@@ -54,7 +57,7 @@ namespace SteamStatsApp
             var playerCountFetcher = new PlayerCountFetcher(configurationProvider, webGateway);
 
             var favoritesViewModelFetcher = new FavoriteGamesViewModelFetcher(gameFetcherCache, gameFavoriter, gameFavoriter, pictureCacheFetcher, playerCountFetcher);
-            var favoritesViewModel = new FavoritesViewModel(favoritesViewModelFetcher, gameFavoriter);
+            var favoritesViewModel = new FavoritesViewModel(favoritesViewModelFetcher, gameFavoriter, networkChecker);
             var favoritesView = new FavoritesView()
             {
                 BindingContext = favoritesViewModel

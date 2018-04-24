@@ -80,30 +80,29 @@
             </DataTemplate>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Label Text="{Binding Games.Count, StringFormat='You currently have {0} favorites!'}"          
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Text="{Binding Games.Count, StringFormat='You currently have {0} favorites!'}"          
                    HorizontalOptions="StartAndExpand" 
                    VerticalOptions="CenterAndExpand" />
-            <Label Grid.Row="1" x:Name="EmptyLabel"
+        <Label Grid.Row="1" x:Name="EmptyLabel"
                    Text="You have no favorites, yet! Head over to the All Games tab and select some."
                    VerticalOptions="CenterAndExpand" 
                    HorizontalOptions="CenterAndExpand"
                    HorizontalTextAlignment="Center"
                    IsVisible="False">
-                <Label.Triggers>
-                    <DataTrigger TargetType="Label"
+            <Label.Triggers>
+                <DataTrigger TargetType="Label"
                                  Binding="{Binding Games.Count}" Value="0">
-                        <Setter Property="IsVisible" Value="True" />
-                    </DataTrigger>
-                </Label.Triggers>
-            </Label>
-            <ListView Grid.Row="1"
+                    <Setter Property="IsVisible" Value="True" />
+                </DataTrigger>
+            </Label.Triggers>
+        </Label>
+        <ListView Grid.Row="1"
                       x:Name="GameList"
                       ItemTemplate="{StaticResource Key=GameListDataTemplate}"
                       ItemsSource="{Binding Games}" 
@@ -113,9 +112,24 @@
                       IsRefreshing="{Binding IsRefreshing}"
                       IsVisible="True"                       
                       HasUnevenRows="True"/>
-            <Button Grid.Row="2"
+        <Button Grid.Row="2"
                     Text="Refresh"
                     Command="{Binding RefreshCommand}"/>
-        </Grid>
-    </ContentPage.Content>
+        <Grid.Chidren>
+
+        </Grid.Chidren>
+    </Grid>
+    <!--TODO: The following should really be pulled out into a wrapper that would look at whether a page requires an
+    internet connection to work and if it does, switch out its template.-->
+    <ContentView.Triggers>
+        <DataTrigger TargetType="ContentView"
+                     Binding="{Binding IsConnected}" Value="False">
+            <Setter Property="Content">
+                <Label Text="You must have an active internet connection for this page to work!"
+                               VerticalOptions="CenterAndExpand" 
+                               HorizontalOptions="CenterAndExpand"
+                               HorizontalTextAlignment="Center" />
+            </Setter>
+        </DataTrigger>
+    </ContentView.Triggers>
 </ContentView>

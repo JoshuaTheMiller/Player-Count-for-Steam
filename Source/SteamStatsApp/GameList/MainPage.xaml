@@ -71,4 +71,15 @@
                 Command="{Binding ClearSearchText}"/>
         </StackLayout>
     </StackLayout>
+    <ContentView.Triggers>
+        <DataTrigger TargetType="ContentView"
+                     Binding="{Binding IsConnected}" Value="False">
+            <Setter Property="Content">
+                <Label Text="You must have an active internet connection for this page to work!"
+                               VerticalOptions="CenterAndExpand" 
+                               HorizontalOptions="CenterAndExpand"
+                               HorizontalTextAlignment="Center" />
+            </Setter>
+        </DataTrigger>
+    </ContentView.Triggers>
 </ContentView>

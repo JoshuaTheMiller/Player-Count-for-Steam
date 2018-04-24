@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Trfc.ClientFramework;
 using Trfc.ClientFramework.CollectionViews;
+using Trfc.ClientFramework.Connectivity;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Main
@@ -15,12 +16,21 @@ namespace SteamStatsApp.Main
     {
         private readonly IGamesViewModelFetcher fetcher;
         private readonly IFavoriteGameFetcher favoriteFecher;
+        private readonly INetworkChecker networkChecker;
 
         private string searchText = string.Empty;
         public string SearchText
         {
             get => searchText;
             set => SetField(ref searchText, value, OnSearchTextUpdated);
+        }
+
+        //TODO: pull out and put in some sort of app level wrapper
+        private bool isConnected = true;
+        public bool IsConnected
+        {
+            get => isConnected;
+            set => SetField(ref isConnected, value);
         }
 
         public ICommand ClearSearchText { get; }
@@ -32,10 +42,15 @@ namespace SteamStatsApp.Main
         public string PageTitle { get; } = "All Games";
 
         public MainPageViewModel(IGamesViewModelFetcher fetcher,
-            IFavoriteGameFetcher favoriteFecher)
+            IFavoriteGameFetcher favoriteFecher,
+            INetworkChecker networkChecker)
         {
             this.fetcher = fetcher;
             this.favoriteFecher = favoriteFecher;
+            this.networkChecker = networkChecker;
+
+            networkChecker.ConnectivityChanged += OnConnectivityChanged;
+
             this.ClearSearchText = CommandFactory.Create(OnClearSearchText);
             this.RefreshGamesList = CommandFactory.Create(async () => await Refresh());
 
@@ -45,6 +60,11 @@ namespace SteamStatsApp.Main
                 new Predicate<GameViewModel>[] { SearchTextFilter },
                 GameComparer,
                 Orderer);
+        }
+
+        private void OnConnectivityChanged(object sender, ConnectionStatusChangedArgs e)
+        {
+            IsConnected = e.IsNowConnected;
         }
 
         private IEnumerable<GameViewModel> Orderer(IEnumerable<GameViewModel> arg)

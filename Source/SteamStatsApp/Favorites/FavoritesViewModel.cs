@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
 using Trfc.ClientFramework.CollectionViews;
+using Trfc.ClientFramework.Connectivity;
 using Trfc.SteamStats.ClientServices.GameFavorites;
 
 namespace SteamStatsApp.Favorites
@@ -14,21 +15,37 @@ namespace SteamStatsApp.Favorites
     {
         public string PageTitle { get; } = "Favorites";
 
-        private readonly IFavoriteGamesViewModelFetcher fetcher;          
+        private readonly IFavoriteGamesViewModelFetcher fetcher;
+        private readonly INetworkChecker networkChecker;
 
         public ICollectionView<FavoriteGameViewModel> Games { get; }
 
+        private bool isConnected = true;
+        public bool IsConnected
+        {
+            get => isConnected;
+            set => SetField(ref isConnected, value);
+        }
+
         public FavoritesViewModel(IFavoriteGamesViewModelFetcher viewModelFetcher,
-            IFavoriteGameFetcher favoriteFecher)
+            IFavoriteGameFetcher favoriteFecher,
+            INetworkChecker networkChecker)
         {
             this.fetcher = viewModelFetcher;
-            favoriteFecher.FavoritesChanged += OnFavoritesChanged;            
-            
+            favoriteFecher.FavoritesChanged += OnFavoritesChanged;
+            this.networkChecker = networkChecker;
+            networkChecker.ConnectivityChanged += OnConnectivityChanged;
+
             Games = CollectionViewFactory.Create(Enumerable.Empty<FavoriteGameViewModel>(),
                 Enumerable.Empty<Predicate<FavoriteGameViewModel>>(), 
                 ComparerFunction, 
                 OrderingFunction,
                 SyncParameters.WithDefaultResultSelector<FavoriteGameViewModel>(KeySelector));
+        }
+
+        private void OnConnectivityChanged(object sender, ConnectionStatusChangedArgs e)
+        {
+            IsConnected = e.IsNowConnected;
         }
 
         private object KeySelector(FavoriteGameViewModel arg)

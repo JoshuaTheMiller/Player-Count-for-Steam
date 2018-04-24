@@ -2,20 +2,29 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Trfc.ClientFramework;
+using Trfc.ClientFramework.Connectivity;
 
 namespace SteamStatsApp
 {
     public sealed class WebGateway : IWebGateway
     {
         private readonly IStringDeserializer stringDeserializer;
+        private readonly INetworkChecker networkChecker;        
 
-        public WebGateway(IStringDeserializer stringDeserializer)
+        public WebGateway(IStringDeserializer stringDeserializer,
+            INetworkChecker networkChecker)
         {
             this.stringDeserializer = stringDeserializer;
-        }
+            this.networkChecker = networkChecker;            
+        }       
 
         public async Task<WebRequestResponse<T>> GetResponseFromEndpoint<T>(string url, CancellationToken token)
-        {
+        {            
+            if(!networkChecker.HasInternetAccess())
+            {
+                return WebRequestFactory.Cancelled<T>();
+            }
+
             try
             {
                 var responseString = await GetResponseString(url, token);
@@ -29,7 +38,7 @@ namespace SteamStatsApp
                 return WebRequestFactory.Cancelled<T>();
             }
             catch (HttpRequestException)
-            {
+            {                
                 return WebRequestFactory.Errored<T>("Internet connection was disrupted.");
             }
         }

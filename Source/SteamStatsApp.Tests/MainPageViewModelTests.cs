@@ -17,6 +17,7 @@ namespace SteamStatsApp.Tests
             var gameFavoriter = new DoppelGameFavoriter();
             var favoriteFetcher = new DoppelFavoriteGameFetcher();
             var querier = new DoppelFavoriteGameQuerier();
+            var networkChecker = new NetworkChecker();
             var doppelFetcher = new DoppelGameFetcher()
             {
                 Games = new GameViewModel[] 
@@ -25,7 +26,7 @@ namespace SteamStatsApp.Tests
                     NewGame("s", 2, gameFavoriter, querier)                    
                 }
             };
-            var viewModel = new MainPageViewModel(doppelFetcher, favoriteFetcher);
+            var viewModel = new MainPageViewModel(doppelFetcher, favoriteFetcher, networkChecker);
             await viewModel.Refresh();
 
             viewModel.SearchText = "s";
