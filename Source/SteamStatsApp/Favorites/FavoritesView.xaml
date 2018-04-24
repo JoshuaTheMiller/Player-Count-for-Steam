@@ -62,10 +62,14 @@
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label x:Name="EmptyLabel"
+            <Label Text="{Binding Games.Count, StringFormat='You currently have {0} favorites!'}"          
+                   HorizontalOptions="StartAndExpand" 
+                   VerticalOptions="CenterAndExpand" />
+            <Label Grid.Row="1" x:Name="EmptyLabel"
                    Text="You have no favorites, yet! Head over to the All Games tab and select some."
                    VerticalOptions="CenterAndExpand" 
                    HorizontalOptions="CenterAndExpand"
@@ -78,7 +82,8 @@
                     </DataTrigger>
                 </Label.Triggers>
             </Label>
-            <ListView x:Name="GameList"
+            <ListView Grid.Row="1"
+                      x:Name="GameList"
                       ItemTemplate="{StaticResource Key=GameListDataTemplate}"
                       ItemsSource="{Binding Games}" 
                       IsPullToRefreshEnabled="True"
@@ -87,7 +92,7 @@
                       IsRefreshing="{Binding IsRefreshing}"
                       IsVisible="True"                       
                       HasUnevenRows="True"/>
-            <Button Grid.Row="1"
+            <Button Grid.Row="2"
                     Text="Refresh"
                     Command="{Binding RefreshCommand}"/>
         </Grid>

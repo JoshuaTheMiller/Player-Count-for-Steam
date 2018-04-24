@@ -17,10 +17,8 @@ namespace Trfc.ClientFramework
             {
                 Items.Add(item);
             }
-
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, range));            
         }
 
         public void RemoveRange(IEnumerable<T> itemsToRemove)
@@ -29,10 +27,8 @@ namespace Trfc.ClientFramework
             {
                 Items.Remove(item);
             }
-
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            this.OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
-            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                     
+            this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, itemsToRemove));            
         }
     }
 }
