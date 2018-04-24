@@ -51,7 +51,15 @@
                                    FontSize="Medium"/>
                             <Label Text="{Binding PlayerCount, StringFormat='{0} Players Online'}"
                                    BackgroundColor="Transparent"                                   
-                                   FontSize="Small"/>
+                                   FontSize="Small">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                             Binding="{Binding PlayerCount}"
+                                             Value="-1">
+                                        <Setter Property="Text" Value="Unable to retrieve player count" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
                         </StackLayout>
                         <ActivityIndicator Grid.ColumnSpan="2" 
                                            Grid.RowSpan="2" 

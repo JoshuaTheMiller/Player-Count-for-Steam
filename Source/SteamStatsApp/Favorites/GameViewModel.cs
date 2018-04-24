@@ -100,6 +100,10 @@ namespace SteamStatsApp.Favorites
             {
                 this.PlayerCount = response.PlayerCount;
             }
+            else
+            {
+                this.PlayerCount = -1;
+            }
         }
 
         private async Task LoadPicture(CancellationToken token)

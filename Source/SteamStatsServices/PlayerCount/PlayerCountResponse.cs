@@ -19,7 +19,7 @@
 
         internal static PlayerCountResponse Failed()
         {
-            return new PlayerCountResponse(-1, true);
+            return new PlayerCountResponse(-1, false);
         }
     }
 }

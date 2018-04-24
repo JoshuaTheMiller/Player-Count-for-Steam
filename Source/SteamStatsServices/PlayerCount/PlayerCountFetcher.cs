@@ -28,7 +28,7 @@ namespace Trfc.SteamStats.ClientServices.PlayerCount
 
             var gatewayResponse = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint, cancellationToken);
 
-            if(!gatewayResponse.Succeeded)
+            if(gatewayResponse.ResultCode != WebRequestResponseResultCode.Succeeded)
             {
                 return PlayerCountResponse.Failed();
             }
