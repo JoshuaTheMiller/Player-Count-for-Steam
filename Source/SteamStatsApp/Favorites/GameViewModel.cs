@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -9,7 +10,7 @@ using Trfc.SteamStats.ClientServices.PlayerCount;
 
 namespace SteamStatsApp.Favorites
 {
-    [Preserve(AllMembers = true)]    
+    [Preserve(AllMembers = true)]
     public sealed class FavoriteGameViewModel : ViewModelBase
     {
         private readonly IGameFavoriter favoriter;
@@ -31,7 +32,7 @@ namespace SteamStatsApp.Favorites
         public byte[] Image
         {
             get => image;
-            private set => SetField(ref image, value);
+            private set => SetField(ref image, value, AreByteArraysTheSame);
         }
 
         private int playerCount;
@@ -42,9 +43,9 @@ namespace SteamStatsApp.Favorites
         }
 
         public ICommand ToggleFavoriteCommand { get; }
-  
-        public FavoriteGameViewModel(string name, int id, bool isFavorited, 
-            IGameFavoriter favoriter, 
+
+        public FavoriteGameViewModel(string name, int id, bool isFavorited,
+            IGameFavoriter favoriter,
             IGamePictureFetcher pictureFetcher,
             IPlayerCountFetcher playerCountFetcher)
         {
@@ -81,7 +82,7 @@ namespace SteamStatsApp.Favorites
                 result = await favoriter.UnfavoriteGameById(this.Id);
 
                 IsFavorited = !result;
-            } 
+            }
         }
 
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
@@ -95,7 +96,7 @@ namespace SteamStatsApp.Favorites
         {
             var response = await this.playerCountFetcher.RetrievePlayerCount(this.Id, token);
 
-            if(response.CountCheckWasSuccessfull)
+            if (response.CountCheckWasSuccessfull)
             {
                 this.PlayerCount = response.PlayerCount;
             }
@@ -105,10 +106,25 @@ namespace SteamStatsApp.Favorites
         {
             var response = await this.pictureFetcher.FetchPictureForGameAsync(this.Id, token);
 
-            if(response.HasPicture)
+            if (response.HasPicture)
             {
                 this.Image = response.Image;
             }
+        }
+
+        private bool AreByteArraysTheSame(byte[] original, byte[] newArray)
+        {
+            if (original == null && newArray == null)
+            {
+                return true;
+            }
+
+            if (original == null || newArray == null)
+            {
+                return false;
+            }
+
+            return original.SequenceEqual(newArray);
         }
     }
 }
