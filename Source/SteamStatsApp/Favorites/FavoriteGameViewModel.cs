@@ -35,7 +35,7 @@ namespace SteamStatsApp.Favorites
             private set => SetField(ref image, value, AreByteArraysTheSame);
         }
 
-        private int playerCount;
+        private int playerCount = 0;
         public int PlayerCount
         {
             get => playerCount;

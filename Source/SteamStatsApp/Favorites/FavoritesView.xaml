@@ -56,7 +56,19 @@
                                     <DataTrigger TargetType="Label"
                                              Binding="{Binding PlayerCount}"
                                              Value="-1">
-                                        <Setter Property="Text" Value="Unable to retrieve player count" />
+                                        <Setter Property="IsVisible" Value="False" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                            <Label Text="Unable to retrieve player count."
+                                   BackgroundColor="Transparent"                                   
+                                   FontSize="Small"
+                                   IsVisible="False">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label"
+                                             Binding="{Binding PlayerCount}"
+                                             Value="-1">
+                                        <Setter Property="IsVisible" Value="True" />
                                     </DataTrigger>
                                 </Label.Triggers>
                             </Label>
