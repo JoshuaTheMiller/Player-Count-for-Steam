@@ -32,10 +32,15 @@ namespace SteamStatsApp.Favorites
 
         public async Task<IEnumerable<FavoriteGameViewModel>> FetchGameViewModelsAsync(CancellationToken token)
         {
-            var allGames = await fetcher.FetchGamesAsync(token);
+            var response = await fetcher.FetchGamesAsync(token);
             var favoriteGames = await favoriteFetcher.GetFavoritedGames();
 
-            IEnumerable<FavoriteGameViewModel> viewModels = ConvertToGameViewModels(allGames, favoriteGames);
+            IEnumerable<FavoriteGameViewModel> viewModels = Enumerable.Empty<FavoriteGameViewModel>();
+
+            if (response.Successful)
+            {
+                viewModels = ConvertToGameViewModels(response.Games, favoriteGames);
+            }            
 
             return viewModels;
         }

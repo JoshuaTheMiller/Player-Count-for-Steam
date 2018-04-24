@@ -20,7 +20,7 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
             this.webGateway = webGateway;
         }
 
-        public async Task<IEnumerable<Game>> FetchGamesAsync(CancellationToken token)
+        public async Task<AvailableGamesResponse> FetchGamesAsync(CancellationToken token)
         {
             var endpoint = configurationProvider.GetConnectionStringById(connectionStringKey);
 
@@ -28,10 +28,11 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
 
             if (response.Succeeded)
             {
-                return response.Value.AvailableGames.Select(ConvertGameDao).ToList();
+                var games = response.Value.AvailableGames.Select(ConvertGameDao).ToList();
+                return AvailableGamesResponse.Succeeded(games);
             }
 
-            return Enumerable.Empty<Game>();
+            return AvailableGamesResponse.Failed(response.ResultMessage);
         }
 
         private Game ConvertGameDao(GameDao gameDao)

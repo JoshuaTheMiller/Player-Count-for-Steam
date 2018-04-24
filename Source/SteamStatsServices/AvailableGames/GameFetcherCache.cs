@@ -22,7 +22,7 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
             this.cachChecker = cachChecker;
         }
 
-        public async Task<IEnumerable<Game>> FetchGamesAsync(CancellationToken token)
+        public async Task<AvailableGamesResponse> FetchGamesAsync(CancellationToken token)
         {
             var localStorageResponse = await storageProvider.Get(storageKey);                        
 
@@ -37,19 +37,24 @@ namespace Trfc.SteamStats.ClientServices.AvailableGames
 
             if(!cacheCheck.IsOutOfDate)
             {
-                return cachedGamesList.GamesList;
-            }
+                return AvailableGamesResponse.Succeeded(cachedGamesList.GamesList);
+            }            
 
             return await FetchAndUpdateGamesCache(token);
         }
 
-        private async Task<IEnumerable<Game>> FetchAndUpdateGamesCache(CancellationToken token)
+        private async Task<AvailableGamesResponse> FetchAndUpdateGamesCache(CancellationToken token)
         {
-            var games = await gamesFetcher.FetchGamesAsync(token);
+            var response = await gamesFetcher.FetchGamesAsync(token);
 
-            await storageProvider.Update(storageKey, CachedGameList.Create(games));
+            if(response.Successful)
+            {
+                await storageProvider.Update(storageKey, CachedGameList.Create(response.Games));
 
-            return games;
+                return response;
+            }
+
+            return response;
         }
     }
 }

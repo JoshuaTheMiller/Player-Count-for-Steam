@@ -6,10 +6,19 @@
 
         public bool Succeeded { get; } = true;
 
-        internal WebRequestResponse(T value, bool succeeded)
+        public WebRequestResponseResultCode ResultCode { get; } = WebRequestResponseResultCode.Errored;
+
+        public string ResultMessage { get; }
+
+        internal WebRequestResponse(T value, 
+            bool succeeded,
+            WebRequestResponseResultCode resultCode,
+            string resultMessage)
         {
             Value = value;
             Succeeded = succeeded;
+            ResultCode = resultCode;
+            ResultMessage = resultMessage;
         }        
     }
 }
