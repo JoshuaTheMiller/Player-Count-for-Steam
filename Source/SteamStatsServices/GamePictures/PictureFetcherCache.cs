@@ -47,15 +47,20 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
 
         private async Task<FetchGamePictureResponse> FetchAndUpdatePictureCache(int appId, CancellationToken token)
         {
-            var picture = await pictureFetcher.FetchPictureForGameAsync(appId, token);
+            var pictureFetchResponse = await pictureFetcher.FetchPictureForGameAsync(appId, token);
 
-            var imageAsBase64String = Convert.ToBase64String(picture.Image);
+            if(!pictureFetchResponse.Successful)
+            {
+                return FetchGamePictureResponse.FetchFailed(pictureFetchResponse.Message);
+            }
+
+            var imageAsBase64String = Convert.ToBase64String(pictureFetchResponse.Image);
 
             var cacheGamePicture = CachedGamePicture.Create(imageAsBase64String, appId);
 
             await storageProvider.Update(storageKey, appId.ToString(), cacheGamePicture);
 
-            var response = FetchGamePictureResponse.ContainsPicture(appId, picture.Image);
+            var response = FetchGamePictureResponse.ContainsPicture(appId, pictureFetchResponse.Image);
 
             return response;
         }

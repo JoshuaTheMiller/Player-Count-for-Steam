@@ -27,6 +27,10 @@ namespace Trfc.SteamStats.ClientServices.GamePictures
 
             var gatewayResponse = await webGateway.GetResponseFromEndpoint<ResponseDao>(endpoint, token);
 
+            if (gatewayResponse.ResultCode != WebRequestResponseResultCode.Succeeded)
+            {
+                return CacheResponse.CacheCheckFailed(gatewayResponse.ResultMessage);
+            }
 
             var response = gatewayResponse.Value;
 
