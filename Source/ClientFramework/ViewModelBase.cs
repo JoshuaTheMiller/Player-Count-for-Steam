@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -45,7 +46,10 @@ namespace Trfc.ClientFramework
             catch (TaskCanceledException e)
             {                
             }
-        
+            catch(OperationCanceledException e)
+            {                
+            }
+
             IsRefreshing = false;
         }
 

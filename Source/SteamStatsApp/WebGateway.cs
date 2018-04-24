@@ -24,19 +24,24 @@ namespace SteamStatsApp
 
                 return WebRequestFactory.Success(obj);
             }
-            catch(System.Net.WebException e)
-            {                
+            catch (System.Net.WebException e)
+            {
                 return WebRequestFactory.Cancelled<T>();
-            }            
+            }
         }
 
         private async Task<string> GetResponseString(string url, CancellationToken token)
         {
             var client = new HttpClient();
 
-            var response = await client.GetAsync(url, token);
+            string responseString;
 
-            return await response.Content.ReadAsStringAsync();
+            using (var response = await client.GetAsync(url, token).ConfigureAwait(false))
+            {
+                responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+
+            return responseString;
         }
     }
 }
