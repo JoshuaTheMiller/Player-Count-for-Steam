@@ -102,8 +102,14 @@ namespace SteamStatsApp.Main
 
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
+            UpdateInternetStatus();
             await OnRefreshGamesList(token);
             OnClearSearchText(null);
+        }
+
+        private void UpdateInternetStatus()
+        {
+            IsConnected = this.networkChecker.HasInternetAccess();
         }
 
         private async void OnFavoritesChanged(object sender, EventArgs e)

@@ -84,8 +84,14 @@ namespace SteamStatsApp.Favorites
 
         protected override async Task TasksToExecuteWhileRefreshing(CancellationToken token)
         {
+            UpdateInternetStatus();
             await RefreshGamesList(token);
             await RefreshGameViewModels();
-        }        
+        }
+
+        private void UpdateInternetStatus()
+        {
+            IsConnected = this.networkChecker.HasInternetAccess();
+        }
     }
 }

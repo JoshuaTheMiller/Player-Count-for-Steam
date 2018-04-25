@@ -76,10 +76,10 @@ namespace Trfc.ClientFramework.CollectionViews
         }
 
         private object PassOldAndNewValuesIntoSelector(GroupJoinResult arg1, T arg2)
-        {            
+        {
             if (arg1.Old.Count() == 0)
             {
-                return this.SyncParameters.ResultSelector(default(T), arg1.New);                
+                return this.SyncParameters.ResultSelector(default(T), arg1.New);
             }
 
             return this.SyncParameters.ResultSelector(arg1.Old.First(), arg1.New);
@@ -103,33 +103,31 @@ namespace Trfc.ClientFramework.CollectionViews
 
         public void Refresh()
         {
-            var sourceWithFiltersApplied = source
-                .Where(ItemPassesFilters).ToList();
+            var modifiedSource = source
+                .Where(ItemPassesFilters).ToList();            
+
+            var itemsToRemove = Items
+                .Except(modifiedSource, ItemComparer).ToList();
+
+            PerformActionOnItems(itemsToRemove, Remove, RemoveRange);
+
+            var itemsToAdd = modifiedSource
+                .Except(Items, ItemComparer).ToList();
+
+            PerformActionOnItems(itemsToAdd, Add, AddRange);
 
             if (OrderingFunction != null)
             {
-                var orderedRange = OrderingFunction.Invoke(sourceWithFiltersApplied).ToList();
+                modifiedSource = OrderingFunction.Invoke(modifiedSource).ToList();
 
                 Items.Clear();
 
-                foreach (var item in orderedRange)
+                foreach (var item in modifiedSource)
                 {
                     Items.Add(item);
                 }
 
-                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, orderedRange, 0, 0));
-            }
-            else
-            {
-                var itemsToRemove = Items
-                    .Except(sourceWithFiltersApplied, ItemComparer).ToList();
-
-                PerformActionOnItems(itemsToRemove, Remove, RemoveRange);
-
-                var itemsToAdd = sourceWithFiltersApplied
-                    .Except(Items, ItemComparer).ToList();
-
-                PerformActionOnItems(itemsToAdd, Add, AddRange);
+                this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, modifiedSource, 0, 0));
             }
         }
 
