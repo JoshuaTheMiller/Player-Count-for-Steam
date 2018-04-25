@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.01.007" package="net.joshuamiller.SteamStatsApp" android:installLocation="auto" android:versionCode="18">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.01.008" package="net.joshuamiller.SteamStatsApp" android:installLocation="auto" android:versionCode="19">
 	<uses-sdk android:minSdkVersion="15" />
 	<application android:label="Player Count Companion" android:icon="@drawable/icon"></application>
 </manifest>

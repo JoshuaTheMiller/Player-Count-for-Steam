@@ -12,12 +12,15 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <BoxView Grid.ColumnSpan="2">
+                        <BoxView Grid.ColumnSpan="2"
+                                 Color="White"
+                                 Opacity=".25"                                 
+                                 IsVisible="False">
                             <BoxView.Triggers>
                                 <DataTrigger TargetType="BoxView"
                                              Binding="{Binding IsFavorited}"
                                              Value="True">
-                                    <Setter Property="Color" Value="LightBlue" />
+                                    <Setter Property="IsVisible" Value="True" />
                                 </DataTrigger>
                             </BoxView.Triggers>
                         </BoxView>
@@ -67,8 +70,6 @@
                    Text="{Binding SearchText}"/>
             <Button Text="Refresh"
                 Command="{Binding RefreshCommand}"/>
-            <Button Text="Clear"
-                Command="{Binding ClearSearchText}"/>
         </StackLayout>
     </StackLayout>
     <ContentView.Triggers>

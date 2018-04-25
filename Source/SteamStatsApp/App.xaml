@@ -4,8 +4,8 @@
              x:Class="SteamStatsApp.App">
 	<Application.Resources>
         <ResourceDictionary>
-            <Color x:Key="colorPrimaryDark">Black</Color>
-            <Color x:Key="PageBackgroundColor">Black</Color>
+            <Color x:Key="colorPrimaryDark">#212121</Color>
+            <Color x:Key="PageBackgroundColor">#212121</Color>
             <Color x:Key="NormalTextColor">White</Color>
             <Color x:Key="ComponentBackgroundColor">#484848</Color>
 
